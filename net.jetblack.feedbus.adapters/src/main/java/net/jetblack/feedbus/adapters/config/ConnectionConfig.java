@@ -12,13 +12,13 @@ public class ConnectionConfig {
 	public static final String DEFAULT_HOST = "localhost";
 	public static final int DEFAULT_PORT = 30011;
 	public static final Class<? extends ByteSerializable> DEFAULT_SERIALIZER = StringSerializer.class;
-	public static final int DEFAULT_WRITE_QUEUE_LENGTH = 8096;
+	public static final int DEFAULT_WRITE_QUEUE_CAPACITY = 8096;
 	public static final long DEFAULT_HEARTBEAT_INTERVAL = 1000;
 
     private InetAddress _address;
     private int _port;
     private Class<? extends ByteSerializable> _byteSerializerType;
-    private int _writeQueueLength;
+    private int _writeQueueCapacity;
     private long _heartbeatInterval;
 
 	@SuppressWarnings("unchecked")
@@ -31,8 +31,8 @@ public class ConnectionConfig {
 		String portText = System.getProperty(packageName + ".PORT");
 		int port = portText== null ? DEFAULT_PORT : Integer.parseInt(portText);
 
-		String writeQueueLengthText = System.getProperty(packageName + ".WRITE_QUEUE_LENGTH");
-		int writeQueueLength = writeQueueLengthText== null ? DEFAULT_WRITE_QUEUE_LENGTH : Integer.parseInt(writeQueueLengthText);
+		String writeQueueCapacityText = System.getProperty(packageName + ".WRITE_QUEUE_CAPACITY");
+		int writeQueueCapacity = writeQueueCapacityText== null ? DEFAULT_WRITE_QUEUE_CAPACITY : Integer.parseInt(writeQueueCapacityText);
 		
 		String classText = System.getProperty(packageName + ".SERIALIZER");
 		Class<?> cls = classText == null ? DEFAULT_SERIALIZER : Class.forName(classText);
@@ -43,17 +43,17 @@ public class ConnectionConfig {
 		String heartbeatIntervalText = System.getProperty(packageName + ".HEARTBEAT_INTERVAL");
 		long heartbeatInterval = heartbeatIntervalText== null ? DEFAULT_HEARTBEAT_INTERVAL : Long.parseLong(heartbeatIntervalText);
 
-		return new ConnectionConfig(address, port, (Class<? extends ByteSerializable>)cls, writeQueueLength, heartbeatInterval);
+		return new ConnectionConfig(address, port, (Class<? extends ByteSerializable>)cls, writeQueueCapacity, heartbeatInterval);
 	}
 	
 	public ConnectionConfig() {
 	}
 	
-	public ConnectionConfig(InetAddress address, int port, Class<? extends ByteSerializable> byteSerializerType, int writeQueueLength, long heartbeatInterval) {
+	public ConnectionConfig(InetAddress address, int port, Class<? extends ByteSerializable> byteSerializerType, int writeQueueCapacity, long heartbeatInterval) {
 		_address = address;
 		_port = port;
 		_byteSerializerType = byteSerializerType;
-		_writeQueueLength = writeQueueLength;
+		_writeQueueCapacity = writeQueueCapacity;
 		_heartbeatInterval = heartbeatInterval;
 	}
 
@@ -81,12 +81,12 @@ public class ConnectionConfig {
     	_byteSerializerType = value;
     }
     
-    public int getWriteQueueLength() {
-    	return _writeQueueLength;
+    public int getWriteQueueCapacity() {
+    	return _writeQueueCapacity;
     }
     
-    public void setWriteQueueLength(int value) {
-    	_writeQueueLength = value;
+    public void setWriteQueueCapacity(int value) {
+    	_writeQueueCapacity = value;
     }
 
     public long getHeartbeatInterval() {
@@ -100,11 +100,11 @@ public class ConnectionConfig {
     @Override
     public String toString() {
         return String.format(
-        		"Address=%1$s, Port=%2$d, ByteEncoderType=%3$s, WriteQueueLength=%4$d, HeartbeatInterval=%5$d", 
+        		"Address=%1$s, Port=%2$d, ByteEncoderType=%3$s, WriteQueueCapacity=%4$d, HeartbeatInterval=%5$d", 
         		_address, 
         		_port, 
         		_byteSerializerType.getName(),
-        		_writeQueueLength,
+        		_writeQueueCapacity,
         		_heartbeatInterval);
     }
 

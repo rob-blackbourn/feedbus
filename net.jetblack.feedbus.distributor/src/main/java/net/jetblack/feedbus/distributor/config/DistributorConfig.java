@@ -9,14 +9,14 @@ public class DistributorConfig {
 	
 	public static final String DEFAULT_HOST = "0.0.0.0";
 	public static final int DEFAULT_PORT = 30011;
-	public static final int DEFAULT_EVENT_QUEUE_LENGTH = 8096;
-	public static final int DEFAULT_WRITE_QUEUE_LENGTH = 8096;
+	public static final int DEFAULT_EVENT_QUEUE_CAPACITY = 8096;
+	public static final int DEFAULT_WRITE_QUEUE_CAPACITY = 8096;
 	public static final long DEFAULT_HEARTBEAT_INTERVAL = 1000;
 
     private InetAddress _address;
     private int _port;
-    private int _eventQueueLength;
-    private int _writeQueueLength;
+    private int _eventQueueCapacity;
+    private int _writeQueueCapacity;
     private long _heartbeatInterval;
     
     public DistributorConfig() {
@@ -25,8 +25,8 @@ public class DistributorConfig {
     public DistributorConfig(InetAddress address, int port, int eventQueueLength, int writeQueueLength, long heartbeatInterval) {
     	_address = address;
     	_port = port;
-    	_eventQueueLength = eventQueueLength;
-    	_writeQueueLength = writeQueueLength;
+    	_eventQueueCapacity = eventQueueLength;
+    	_writeQueueCapacity = writeQueueLength;
     	_heartbeatInterval = heartbeatInterval;
     }
     
@@ -46,20 +46,20 @@ public class DistributorConfig {
     	_port = value;
     }
     
-    public int getEventQueueLength() {
-    	return _eventQueueLength;
+    public int getEventQueueCapacity() {
+    	return _eventQueueCapacity;
     }
     
-    public void setEventQueueLength(int value) {
-    	_eventQueueLength = value;
+    public void setEventQueueCapacity(int value) {
+    	_eventQueueCapacity = value;
     }
     
-    public int getWriteQueueLength() {
-    	return _writeQueueLength;
+    public int getWriteQueueCapacity() {
+    	return _writeQueueCapacity;
     }
     
-    public void setWriteQueueLength(int value) {
-    	_writeQueueLength = value;
+    public void setWriteQueueCapacity(int value) {
+    	_writeQueueCapacity = value;
     }
     
     public long getHeartbeatInterval() {
@@ -78,11 +78,11 @@ public class DistributorConfig {
 		String portText = System.getProperty(packageName + ".PORT");
 		int port = portText== null ? DEFAULT_PORT : Integer.parseInt(portText);
 
-		String eventQueueLengthText = System.getProperty(packageName + ".EVENT_QUEUE_LENGTH");
-		int eventQueueLength = eventQueueLengthText== null ? DEFAULT_EVENT_QUEUE_LENGTH : Integer.parseInt(eventQueueLengthText);
+		String eventQueueLengthText = System.getProperty(packageName + ".EVENT_QUEUE_CAPACITY");
+		int eventQueueLength = eventQueueLengthText== null ? DEFAULT_EVENT_QUEUE_CAPACITY : Integer.parseInt(eventQueueLengthText);
 
-		String writeQueueLengthText = System.getProperty(packageName + ".WRITE_QUEUE_LENGTH");
-		int writeQueueLength = writeQueueLengthText== null ? DEFAULT_WRITE_QUEUE_LENGTH : Integer.parseInt(writeQueueLengthText);
+		String writeQueueLengthText = System.getProperty(packageName + ".WRITE_QUEUE_CAPACITY");
+		int writeQueueLength = writeQueueLengthText== null ? DEFAULT_WRITE_QUEUE_CAPACITY : Integer.parseInt(writeQueueLengthText);
 
 		String heartbeatIntervalText = System.getProperty(packageName + ".HEARTBEAT_INTERVAL");
 		long heartbeatInterval = heartbeatIntervalText== null ? DEFAULT_HEARTBEAT_INTERVAL : Long.parseLong(heartbeatIntervalText);

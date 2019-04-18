@@ -11,8 +11,8 @@ public class Program {
 			Server server = new Server(
 					config.getAddress(), 
 					config.getPort(), 
-					config.getEventQueueLength(), 
-					config.getWriteQueueLength());
+					config.getEventQueueCapacity(), 
+					config.getWriteQueueCapacity());
 	        server.start(config.getHeartbeatInterval());
 	        
 	        System.out.println("Press <ENTER> to quit");

@@ -52,24 +52,24 @@ public class Client implements Closeable {
     	ConnectionConfig config = ConnectionConfig.createFromProperties();
     	Class<? extends ByteSerializable> klass = config.getByteSerializerType();
     	ByteSerializable byteSerializable = klass.getDeclaredConstructor().newInstance();
-        return Create(config.getAddress(), config.getPort(), byteSerializable, config.getWriteQueueLength());
+        return create(config.getAddress(), config.getPort(), byteSerializable, config.getWriteQueueCapacity());
     }
 
-    public static Client Create(String name, FeedBusConfig config, int writeQueueLength) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException, InterruptedException
+    public static Client create(String name, FeedBusConfig config, int writeQueueCapacity) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException, InterruptedException
     {
         NamedConnectionConfig connectionConfig = config.Connections.get(name);
         ByteSerializable  byteSerializer = (ByteSerializable) connectionConfig.getByteSerializerType().getConstructor().newInstance();
-        return Create(connectionConfig.getAddress(), connectionConfig.getPort(), byteSerializer, writeQueueLength);
+        return create(connectionConfig.getAddress(), connectionConfig.getPort(), byteSerializer, writeQueueCapacity);
     }
 
-    public static Client Create(InetAddress address, int port, ByteSerializable byteSerializer, int writeQueueLength) throws IOException, InterruptedException {
+    public static Client create(InetAddress address, int port, ByteSerializable byteSerializer, int writeQueueCapacity) throws IOException, InterruptedException {
         Socket socket = new Socket(address, port);
 
-        Client client = new Client(socket, byteSerializer, writeQueueLength);
+        Client client = new Client(socket, byteSerializer, writeQueueCapacity);
         
         client.start();
 
-        client.addSubscription("_admin", "heartbeat");
+        client.addSubscription("__admin__", "heartbeat");
 
         return client;
     }
@@ -80,12 +80,12 @@ public class Client implements Closeable {
     public final EventRegister<ConnectionChangedEventArgs> ConnectionChanged = _connectionChanged;
     public final EventRegister<EventArgs> Heartbeat = _heartbeat;
 
-    public Client(Socket socket, ByteSerializable byteSerializer, int writeQueueLength) throws IOException {
+    public Client(Socket socket, ByteSerializable byteSerializer, int writeQueueCapacity) throws IOException {
     	_socket = socket;
     	_inputStream = new DataInputStream(socket.getInputStream()); 
     	_outputStream = new DataOutputStream(socket.getOutputStream()); 
         _byteEncoder = byteSerializer;
-        _writeQueue = new ArrayBlockingQueue<Message>(writeQueueLength);
+        _writeQueue = new ArrayBlockingQueue<Message>(writeQueueCapacity);
     }
 
     private Thread _readThread, _writeThread;
