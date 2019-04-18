@@ -22,9 +22,9 @@ public class Program {
 				
 				@Override
 				public void onEvent(DataReceivedEventArgs event) {
-					System.out.println("Data received: " + event.Data);
+					System.out.println("Data received: " + event.getData());
 					@SuppressWarnings("unchecked")
-					Map<String,Object> data = (Map<String, Object>) event.Data;
+					Map<String,Object> data = (Map<String, Object>) event.getData();
 					for (Map.Entry<String, Object> item : data.entrySet()) {
 						System.out.println(item.getKey() + ": " + item.getValue());
 					}

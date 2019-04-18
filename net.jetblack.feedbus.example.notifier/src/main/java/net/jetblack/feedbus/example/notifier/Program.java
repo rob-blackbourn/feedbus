@@ -18,7 +18,7 @@ public class Program {
 
 				@Override
 				public void onEvent(ForwardedSubscriptionEventArgs event) {
-					System.out.println("Subscription received on feed \"" + event.Feed+ "\" for topic \"" + event.Topic + "\" add "+ event.IsAdd);
+					System.out.println("Subscription received on feed \"" + event.getFeed() + "\" for topic \"" + event.getTopic() + "\" add "+ event.getIsAdd());
 				}
 				
 			});
