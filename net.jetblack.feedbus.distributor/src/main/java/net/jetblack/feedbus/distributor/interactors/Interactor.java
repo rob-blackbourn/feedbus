@@ -26,8 +26,8 @@ public class Interactor implements Comparable<Interactor>, Closeable {
 	
 	private Thread _readThread, _writeThread;
 	
-	public final String Id;
-	public final InetAddress Address;
+	private final String _id;
+	private final InetAddress _address;
 	
 	public static Interactor create(Socket socket, EventQueue<InteractorEventArgs> eventQueue, int writeQueueCapacity) throws IOException {
 		return new Interactor(
@@ -41,10 +41,18 @@ public class Interactor implements Comparable<Interactor>, Closeable {
 	public Interactor(DataInputStream inputStream, DataOutputStream outputStream, InetAddress address, EventQueue<InteractorEventArgs> eventQueue, int writeQueueCapacity) {
 		_inputStream = inputStream;
 		_outputStream = outputStream;
-		Address = address;
+		_address = address;
 		_eventQueue = eventQueue;
-		Id = UUID.randomUUID().toString();
+		_id = UUID.randomUUID().toString();
 		_writeQueue = new ArrayBlockingQueue<Message>(writeQueueCapacity);
+	}
+
+	public String getId() {
+		return _id;
+	}
+	
+	public InetAddress getAddress() {
+		return _address;
 	}
     
 	public void start() {
@@ -53,14 +61,14 @@ public class Interactor implements Comparable<Interactor>, Closeable {
 			public void run() {
 				queueReceivedMessages();
 			}
-		}, "Interactor-" + Id + "-read");
+		}, "Interactor-" + _id + "-read");
 
 		_writeThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				writeQueuedMessages();
 			}
-		}, "Interactor-" + Id + "-write");
+		}, "Interactor-" + _id + "-write");
 		
 		_readThread.start();
 		_writeThread.start();
@@ -125,22 +133,22 @@ public class Interactor implements Comparable<Interactor>, Closeable {
     }
 
     public boolean equals(Interactor other) {
-        return other != null && other.Id == Id;
+        return other != null && other._id == _id;
     }
 
     @Override
     public int hashCode() {
-        return Id.hashCode();
+        return _id.hashCode();
     }
 
     @Override
     public String toString() {
-        return Id + ":" + Address;
+        return _id + ":" + _address;
     }
 
 	@Override
 	public int compareTo(Interactor other) {
-		return other == null ? 1 : Id.compareTo(other.Id);
+		return other == null ? 1 : _id.compareTo(other._id);
 	}
 	
 	public void join() throws InterruptedException {

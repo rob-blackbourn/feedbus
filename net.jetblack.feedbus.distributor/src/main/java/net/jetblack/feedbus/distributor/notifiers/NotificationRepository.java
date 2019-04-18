@@ -11,9 +11,6 @@ public class NotificationRepository {
 
     private final Map<String, Set<Interactor>> _feedToNotifiables = new HashMap<String, Set<Interactor>>();
 
-    public NotificationRepository() {
-    }
-
     public void removeInteractor(Interactor interactor) {
         // Remove the interactor where it appears in the notifiables, remembering any topics which are left without any interactors.
         Set<String> topicsWithoutInteractors = new HashSet<String>();

@@ -30,8 +30,8 @@ public class NotificationManager {
         interactorManager.InteractorClosed.add(new EventListener<InteractorClosedEventArgs>() {
 			@Override
 			public void onEvent(InteractorClosedEventArgs event) {
-		        logger.fine("Removing notification requests from " + event.Interactor);
-		        removeInteractor(event.Interactor);
+		        logger.fine("Removing notification requests from " + event.getInteractor());
+		        removeInteractor(event.getInteractor());
 			}
 		});
         
@@ -39,8 +39,8 @@ public class NotificationManager {
 			
 			@Override
 			public void onEvent(InteractorFaultedEventArgs event) {
-		        logger.fine("Interactor faulted: " + event.Interactor + " - " + event.Error);
-		        removeInteractor(event.Interactor);
+		        logger.fine("Interactor faulted: " + event.getInteractor() + " - " + event.getError());
+		        removeInteractor(event.getInteractor());
 			}
 		});
     }

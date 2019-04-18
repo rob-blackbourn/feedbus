@@ -3,11 +3,15 @@ package net.jetblack.feedbus.distributor.interactors;
 import net.jetblack.feedbus.messages.Message;
 
 public class InteractorMessageEventArgs extends InteractorEventArgs {
+	
+	private final Message _message;
 
 	public InteractorMessageEventArgs(Interactor interactor, Message message) {
 		super(interactor);
-		Message = message;
+		_message = message;
 	}
-	
-	public final Message Message;
+
+	public Message getMessage() {
+		return _message;
+	}
 }

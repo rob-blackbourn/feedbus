@@ -41,15 +41,15 @@ public class SubscriptionManager {
         interactorManager.InteractorClosed.add(new EventListener<InteractorClosedEventArgs>() {
 			@Override
 			public void onEvent(InteractorClosedEventArgs event) {
-		        closeInteractor(event.Interactor);
+		        closeInteractor(event.getInteractor());
 			}
 		});
         
         interactorManager.InteractorFaulted.add(new EventListener<InteractorFaultedEventArgs>() {
 			@Override
 			public void onEvent(InteractorFaultedEventArgs event) {
-		        logger.fine("Interactor faulted: " + event.Interactor + " - " + event.Error.getMessage());
-		        closeInteractor(event.Interactor);
+		        logger.fine("Interactor faulted: " + event.getInteractor() + " - " + event.getError().getMessage());
+		        closeInteractor(event.getInteractor());
 			}
 		});
 
@@ -57,11 +57,11 @@ public class SubscriptionManager {
 			@Override
 			public void onEvent(NotificationEventArgs event) {
 		        // Find the subscribers whoes subscriptions match the pattern.
-		        for (KeyValuePair<String, Set<Interactor>> matchingSubscriptions : _repository.getSubscribersToFeed(event.Feed)) {
+		        for (KeyValuePair<String, Set<Interactor>> matchingSubscriptions : _repository.getSubscribersToFeed(event.getFeed())) {
 		            // Tell the requestor about subscribers that are interested in this topic.
 		            for (Interactor subscriber : matchingSubscriptions.Value) {
 		                try {
-							event.Interactor.sendMessage(new ForwardedSubscriptionRequest(subscriber.Id, event.Feed, matchingSubscriptions.Key, true));
+							event.getInteractor().sendMessage(new ForwardedSubscriptionRequest(subscriber.getId(), event.getFeed(), matchingSubscriptions.Key, true));
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -75,7 +75,7 @@ public class SubscriptionManager {
 
 			@Override
 			public void onEvent(StalePublisherEventArgs event) {
-		        for (FeedTopic staleFeedTopic : event.FeedsAndTopics) {
+		        for (FeedTopic staleFeedTopic : event.getFeedsAndTopics()) {
 		        	MulticastData staleMessage = new MulticastData(staleFeedTopic.getFeed(), staleFeedTopic.getTopic(), true, null);
 
 		            for (Interactor subscriber : _repository.GetSubscribersToFeedAndTopic(staleFeedTopic.getFeed(), staleFeedTopic.getTopic())) {
@@ -101,7 +101,7 @@ public class SubscriptionManager {
         else
             _repository.removeSubscription(subscriber, subscriptionRequest.getFeed(), subscriptionRequest.getTopic(), false);
 
-        _notificationManager.forwardSubscription(new ForwardedSubscriptionRequest(subscriber.Id, subscriptionRequest.getFeed(), subscriptionRequest.getTopic(), subscriptionRequest.getIsAdd()));
+        _notificationManager.forwardSubscription(new ForwardedSubscriptionRequest(subscriber.getId(), subscriptionRequest.getFeed(), subscriptionRequest.getTopic(), subscriptionRequest.getIsAdd()));
     }
 
     public void requestMonitor(Interactor monitor, MonitorRequest monitorRequest) {
@@ -139,7 +139,7 @@ public class SubscriptionManager {
         		.select(new UnaryFunction<FeedTopic, ForwardedSubscriptionRequest>() {
 					@Override
 					public ForwardedSubscriptionRequest invoke(FeedTopic feedTopic) {
-						return new ForwardedSubscriptionRequest(interactor.Id, feedTopic.getFeed(), feedTopic.getTopic(), false);
+						return new ForwardedSubscriptionRequest(interactor.getId(), feedTopic.getFeed(), feedTopic.getTopic(), false);
 					}
 				});
         // Inform those interested that this interactor is no longer subscribed to these topics.
@@ -154,7 +154,7 @@ public class SubscriptionManager {
                 .firstOrDefault(new UnaryFunction<Interactor, Boolean>() {
 					@Override
 					public Boolean invoke(Interactor arg) {
-						return arg.Id.equals(unicastData.getClientId());
+						return arg.getId().equals(unicastData.getClientId());
 					}
 				});
 

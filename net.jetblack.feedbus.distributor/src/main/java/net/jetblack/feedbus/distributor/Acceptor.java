@@ -12,6 +12,9 @@ import net.jetblack.feedbus.distributor.interactors.InteractorEventArgs;
 import net.jetblack.feedbus.distributor.interactors.InteractorListener;
 import net.jetblack.util.concurrent.EventQueue;
 
+/**
+ * Accept incoming connections.
+ */
 public class Acceptor implements Runnable {
 
 	private static final Logger logger = Logger.getLogger(Acceptor.class.getName());
@@ -21,6 +24,14 @@ public class Acceptor implements Runnable {
 	private final InetAddress _address;
 	private final int _port;
 
+	/**
+	 * Constructs the acceptor.
+	 * 
+	 * @param address The address to bind to.
+	 * @param port The port to bind to.
+	 * @param eventQueue A queue with which the service will communicate with the client.
+	 * @param writeQueueCapacity The capacity of the interactor write queue.
+	 */
 	public Acceptor(InetAddress address, int port, EventQueue<InteractorEventArgs> eventQueue, int writeQueueCapacity) {
 		_eventQueue = eventQueue;
 		_address = address;
@@ -28,6 +39,11 @@ public class Acceptor implements Runnable {
 		_writeQueueCapacity = writeQueueCapacity;
 	}
 
+	/**
+	 * Start accepting connections.
+	 * 
+	 * @return The listener thread.
+	 */
 	public Thread start() {
 		Thread thread = new Thread(this);
 		thread.start();

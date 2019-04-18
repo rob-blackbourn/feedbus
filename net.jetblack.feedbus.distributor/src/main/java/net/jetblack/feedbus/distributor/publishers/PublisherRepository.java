@@ -11,9 +11,6 @@ public class PublisherRepository {
 
     private final TwoWaySet<FeedTopic, Interactor> _topicsAndPublishers = new TwoWaySet<FeedTopic, Interactor>();
 
-    public PublisherRepository() {
-    }
-
     public void addPublisher(Interactor publisher, String feed, String topic) {
         _topicsAndPublishers.addSecondAndFirst(publisher, new FeedTopic(feed, topic));
     }

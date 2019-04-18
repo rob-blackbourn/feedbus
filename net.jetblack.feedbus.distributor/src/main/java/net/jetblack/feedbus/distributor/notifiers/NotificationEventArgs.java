@@ -5,15 +5,18 @@ import net.jetblack.feedbus.distributor.interactors.InteractorEventArgs;
 
 public class NotificationEventArgs extends InteractorEventArgs {
 
+    private final String _feed;
+
     public NotificationEventArgs(Interactor interactor, String feed) {
         super(interactor);
-        Feed = feed;
+        _feed = feed;
     }
-
-    public final String Feed;
+    public String getFeed() {
+    	return _feed;
+    }
 
 	@Override
 	public String toString() {
-	    return super.toString() + ", Feed=" + Feed;
+	    return super.toString() + ", Feed=" + _feed;
 	}
 }

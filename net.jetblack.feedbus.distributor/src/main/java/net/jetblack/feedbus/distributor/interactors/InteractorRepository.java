@@ -14,11 +14,11 @@ public class InteractorRepository implements Closeable {
 	}
 
 	public void add(Interactor interactor) {
-		_interactors.put(interactor.Id, interactor);
+		_interactors.put(interactor.getId(), interactor);
 	}
 
 	public Interactor remove(Interactor interactor) {
-		return _interactors.remove(interactor.Id);
+		return _interactors.remove(interactor.getId());
 	}
 
 	@Override

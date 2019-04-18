@@ -8,15 +8,19 @@ import net.jetblack.feedbus.messages.FeedTopic;
 
 public class StalePublisherEventArgs extends InteractorEventArgs {
 
+    private final Set<FeedTopic> _feedsAndTopics;
+
     public StalePublisherEventArgs(Interactor interactor, Set<FeedTopic> feedsAndTopics) {
         super(interactor);
-        FeedsAndTopics = feedsAndTopics;
+        _feedsAndTopics = feedsAndTopics;
     }
 
-    public final Set<FeedTopic> FeedsAndTopics;
+    public Set<FeedTopic> getFeedsAndTopics() {
+    	return _feedsAndTopics;
+    }
 
 	@Override
 	public String toString() {
-	    return super.toString() + ", FeedsAndTopics=[" + FeedsAndTopics + "]";
+	    return super.toString() + ", FeedsAndTopics=[" + _feedsAndTopics + "]";
 	}
 }

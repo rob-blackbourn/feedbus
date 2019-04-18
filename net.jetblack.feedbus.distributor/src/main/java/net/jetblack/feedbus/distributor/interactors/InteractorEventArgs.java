@@ -4,9 +4,13 @@ import net.jetblack.util.EventArgs;
 
 public class InteractorEventArgs extends EventArgs {
 
+    private final Interactor _interactor;
+
     public InteractorEventArgs(Interactor interactor) {
-        Interactor = interactor;
+        _interactor = interactor;
     }
 
-    public final Interactor Interactor;
+    public Interactor getInteractor() {
+    	return _interactor;
+    }
 }

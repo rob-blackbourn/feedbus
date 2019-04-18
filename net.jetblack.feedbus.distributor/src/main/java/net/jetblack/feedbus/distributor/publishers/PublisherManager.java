@@ -32,7 +32,7 @@ public class PublisherManager {
         interactorManager.InteractorClosed.add(new EventListener<InteractorClosedEventArgs>() {
 			@Override
 			public void onEvent(InteractorClosedEventArgs event) {
-				closeInteractor(event.Interactor);
+				closeInteractor(event.getInteractor());
 			}
 		});
         
@@ -40,8 +40,8 @@ public class PublisherManager {
 			
 			@Override
 			public void onEvent(InteractorFaultedEventArgs event) {
-		        logger.fine("Interactor faulted: " + event.Interactor + " - " + event.Error);
-		        closeInteractor(event.Interactor);
+		        logger.fine("Interactor faulted: " + event.getInteractor() + " - " + event.getError());
+		        closeInteractor(event.getInteractor());
 			}
 		});
     }

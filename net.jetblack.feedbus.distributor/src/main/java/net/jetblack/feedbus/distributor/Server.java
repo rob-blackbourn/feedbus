@@ -90,43 +90,43 @@ public class Server implements Closeable {
     }
 
     private void onInteractorConnected(InteractorConnectedEventArgs event) {
-        _interactorManager.addInteractor(event.Interactor);
-        event.Interactor.start();
+        _interactorManager.addInteractor(event.getInteractor());
+        event.getInteractor().start();
     }
 
     private void onInteractorError(InteractorErrorEventArgs event) {
-        if (event.Error instanceof EOFException)
-            _interactorManager.closeInteractor(event.Interactor);
+        if (event.getError() instanceof EOFException)
+            _interactorManager.closeInteractor(event.getInteractor());
         else
-            _interactorManager.faultInteractor(event.Interactor, event.Error);
+            _interactorManager.faultInteractor(event.getInteractor(), event.getError());
     }
 
     private void onMessage(InteractorMessageEventArgs event) {
-        logger.fine(String.format("OnMessage(sender=%s, message=%s", event.Interactor, event.Message));
+        logger.fine(String.format("OnMessage(sender=%s, message=%s", event.getInteractor(), event.getMessage()));
 
-        switch (event.Message.getType()) {
+        switch (event.getMessage().getType()) {
             case MonitorRequest:
-                _subscriptionManager.requestMonitor(event.Interactor, (MonitorRequest)event.Message);
+                _subscriptionManager.requestMonitor(event.getInteractor(), (MonitorRequest)event.getMessage());
                 break;
 
             case SubscriptionRequest:
-                _subscriptionManager.requestSubscription(event.Interactor, (SubscriptionRequest)event.Message);
+                _subscriptionManager.requestSubscription(event.getInteractor(), (SubscriptionRequest)event.getMessage());
                 break;
 
             case MulticastData:
-                _subscriptionManager.sendMulticastData(event.Interactor, (MulticastData)event.Message);
+                _subscriptionManager.sendMulticastData(event.getInteractor(), (MulticastData)event.getMessage());
                 break;
 
             case UnicastData:
-                _subscriptionManager.sendUnicastData(event.Interactor, (UnicastData)event.Message);
+                _subscriptionManager.sendUnicastData(event.getInteractor(), (UnicastData)event.getMessage());
                 break;
 
             case NotificationRequest:
-                _notificationManager.requestNotification(event.Interactor, (NotificationRequest)event.Message);
+                _notificationManager.requestNotification(event.getInteractor(), (NotificationRequest)event.getMessage());
                 break;
 
             default:
-                logger.warning("Received unknown message type " + event.Message.getType() + " from interactor " + event.Interactor + ".");
+                logger.warning("Received unknown message type " + event.getMessage().getType() + " from interactor " + event.getInteractor() + ".");
                 break;
         }
     }
