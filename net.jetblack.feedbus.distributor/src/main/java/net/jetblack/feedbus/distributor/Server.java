@@ -23,6 +23,9 @@ import net.jetblack.feedbus.messages.UnicastData;
 import net.jetblack.util.EventListener;
 import net.jetblack.util.concurrent.EventQueue;
 
+/**
+ * The server class routes messages through the distributor.
+ */
 public class Server implements Closeable {
 
 	private static final Logger logger = Logger.getLogger(Server.class.getName());
@@ -38,6 +41,14 @@ public class Server implements Closeable {
     private Thread _eventQueueThread;
     private Thread _acceptThread;
 
+    /**
+     * Construct a server.
+     * 
+     * @param address The address to bind to.
+     * @param port The port to bind to.
+     * @param eventQueueCapacity The capacity of the event queue.
+     * @param writeQueueCapacity The capacity of the write queue on an interactor.
+     */
     public Server(InetAddress address, int port, int eventQueueCapacity, int writeQueueCapacity) {
         _eventQueue = new EventQueue<InteractorEventArgs>(eventQueueCapacity);
         
@@ -58,6 +69,11 @@ public class Server implements Closeable {
         _subscriptionManager = new SubscriptionManager(_interactorManager, _notificationManager);
     }
 
+    /**
+     * Start the server.
+     * 
+     * @param heartbeatInterval The time in milliseconds to wait between each heart beat or 0 for no heart beat.
+     */
     public void start(long heartbeatInterval) {
         logger.info("Starting server");
 

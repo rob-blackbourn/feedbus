@@ -2,8 +2,16 @@ package net.jetblack.feedbus.distributor;
 
 import net.jetblack.feedbus.distributor.config.DistributorConfig;
 
+/**
+ * The entry point for starting a distributor.
+ */
 public class Program {
 
+	/**
+	 * Starts a distributor.
+	 * 
+	 * @param args No arguments are required.
+	 */
 	public static void main(String[] args) {
 		try {
 			DistributorConfig config = DistributorConfig.createFromProperties();

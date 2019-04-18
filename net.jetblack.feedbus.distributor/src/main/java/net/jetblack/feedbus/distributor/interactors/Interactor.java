@@ -14,6 +14,9 @@ import java.util.logging.Logger;
 import net.jetblack.feedbus.messages.Message;
 import net.jetblack.util.concurrent.EventQueue;
 
+/**
+ * An interactor represents a connection between a client and the server.
+ */
 public class Interactor implements Comparable<Interactor>, Closeable {
 
 	private static final Logger logger = Logger.getLogger(Interactor.class.getName());
@@ -28,7 +31,16 @@ public class Interactor implements Comparable<Interactor>, Closeable {
 	
 	private final String _id;
 	private final InetAddress _address;
-	
+
+	/**
+	 * Construct the interactor.
+	 * 
+	 * @param socket The socket for cummincation.
+	 * @param eventQueue The event queue used to communicate with the server.
+	 * @param writeQueueCapacity The capacity of the interactor write queue.
+	 * @return A new interactor.
+	 * @throws IOException
+	 */
 	public static Interactor create(Socket socket, EventQueue<InteractorEventArgs> eventQueue, int writeQueueCapacity) throws IOException {
 		return new Interactor(
 				new DataInputStream(socket.getInputStream()),
@@ -38,7 +50,7 @@ public class Interactor implements Comparable<Interactor>, Closeable {
 				writeQueueCapacity);
 	}
 	
-	public Interactor(DataInputStream inputStream, DataOutputStream outputStream, InetAddress address, EventQueue<InteractorEventArgs> eventQueue, int writeQueueCapacity) {
+	private Interactor(DataInputStream inputStream, DataOutputStream outputStream, InetAddress address, EventQueue<InteractorEventArgs> eventQueue, int writeQueueCapacity) {
 		_inputStream = inputStream;
 		_outputStream = outputStream;
 		_address = address;
@@ -47,14 +59,27 @@ public class Interactor implements Comparable<Interactor>, Closeable {
 		_writeQueue = new ArrayBlockingQueue<Message>(writeQueueCapacity);
 	}
 
+	/**
+	 * Gets the unique client identifier.
+	 * 
+	 * @return A client identifier.
+	 */
 	public String getId() {
 		return _id;
 	}
 	
+	/**
+	 * Gets the remote address of the client.
+	 * 
+	 * @return The clients address.
+	 */
 	public InetAddress getAddress() {
 		return _address;
 	}
     
+	/**
+	 * Start sending and receiving data.
+	 */
 	public void start() {
 		_readThread = new Thread(new Runnable() {
 			@Override
@@ -119,10 +144,22 @@ public class Interactor implements Comparable<Interactor>, Closeable {
         logger.fine("Exited read loop for " + this);
 	}
 
+	/**
+	 * Send a message to the client.
+	 * 
+	 * @param message The message to send.
+	 * @throws InterruptedException
+	 */
     public void sendMessage(Message message) throws InterruptedException {
         _writeQueue.put(message);
     }
 
+    /**
+     * Receive a message from a client.
+     * 
+     * @return The message sent by the client.
+     * @throws IOException
+     */
     public Message receiveMessage() throws IOException {
         return Message.read(_inputStream);
     }
@@ -132,6 +169,7 @@ public class Interactor implements Comparable<Interactor>, Closeable {
         return equals((Interactor)obj);
     }
 
+    // TODO: Use a more standard implementation.
     public boolean equals(Interactor other) {
         return other != null && other._id == _id;
     }
@@ -149,11 +187,6 @@ public class Interactor implements Comparable<Interactor>, Closeable {
 	@Override
 	public int compareTo(Interactor other) {
 		return other == null ? 1 : _id.compareTo(other._id);
-	}
-	
-	public void join() throws InterruptedException {
-		_readThread.join();
-		_writeThread.join();
 	}
 
 	@Override
