@@ -76,9 +76,9 @@ public class SubscriptionManager {
 			@Override
 			public void onEvent(StalePublisherEventArgs event) {
 		        for (FeedTopic staleFeedTopic : event.FeedsAndTopics) {
-		        	MulticastData staleMessage = new MulticastData(staleFeedTopic.Feed, staleFeedTopic.Topic, true, null);
+		        	MulticastData staleMessage = new MulticastData(staleFeedTopic.getFeed(), staleFeedTopic.getTopic(), true, null);
 
-		            for (Interactor subscriber : _repository.GetSubscribersToFeedAndTopic(staleFeedTopic.Feed, staleFeedTopic.Topic)) {
+		            for (Interactor subscriber : _repository.GetSubscribersToFeedAndTopic(staleFeedTopic.getFeed(), staleFeedTopic.getTopic())) {
 		                try {
 							subscriber.sendMessage(staleMessage);
 						} catch (InterruptedException e) {
@@ -96,21 +96,21 @@ public class SubscriptionManager {
     public void requestSubscription(Interactor subscriber, SubscriptionRequest subscriptionRequest) {
         logger.info("Received subscription from " + subscriber + " on \"" + subscriptionRequest + "\"");
 
-        if (subscriptionRequest.IsAdd)
-            _repository.addSubscription(subscriber, subscriptionRequest.Feed, subscriptionRequest.Topic);
+        if (subscriptionRequest.getIsAdd())
+            _repository.addSubscription(subscriber, subscriptionRequest.getFeed(), subscriptionRequest.getTopic());
         else
-            _repository.removeSubscription(subscriber, subscriptionRequest.Feed, subscriptionRequest.Topic, false);
+            _repository.removeSubscription(subscriber, subscriptionRequest.getFeed(), subscriptionRequest.getTopic(), false);
 
-        _notificationManager.forwardSubscription(new ForwardedSubscriptionRequest(subscriber.Id, subscriptionRequest.Feed, subscriptionRequest.Topic, subscriptionRequest.IsAdd));
+        _notificationManager.forwardSubscription(new ForwardedSubscriptionRequest(subscriber.Id, subscriptionRequest.getFeed(), subscriptionRequest.getTopic(), subscriptionRequest.getIsAdd()));
     }
 
     public void requestMonitor(Interactor monitor, MonitorRequest monitorRequest) {
         logger.info("Received monitor from " + monitor + " on \"" + monitorRequest + "\"");
 
-        if (monitorRequest.IsAdd)
-            _repository.addMonitor(monitor, monitorRequest.Feed);
+        if (monitorRequest.getIsAdd())
+            _repository.addMonitor(monitor, monitorRequest.getFeed());
         else
-            _repository.removeMonitor(monitor, monitorRequest.Feed, false);
+            _repository.removeMonitor(monitor, monitorRequest.getFeed(), false);
     }
 
     private void closeInteractor(Interactor interactor) {
@@ -119,14 +119,14 @@ public class SubscriptionManager {
         // Remove the subscriptions
         List<FeedTopic> feedTopics = _repository.findFeedTopicsBySubscriber(interactor);
         for (FeedTopic feedTopic : feedTopics) {
-            _repository.removeSubscription(interactor, feedTopic.Feed, feedTopic.Topic, true);
+            _repository.removeSubscription(interactor, feedTopic.getFeed(), feedTopic.getTopic(), true);
         }
 
         Enumerable<String> monitorEnumerator = Enumerable.create(feedTopics)
         		.select(new UnaryFunction<FeedTopic, String>() {
 					@Override
 					public String invoke(FeedTopic arg) {
-						return arg.Feed;
+						return arg.getFeed();
 					}
 				})
         		.distinct(StringComparator.Default);
@@ -139,7 +139,7 @@ public class SubscriptionManager {
         		.select(new UnaryFunction<FeedTopic, ForwardedSubscriptionRequest>() {
 					@Override
 					public ForwardedSubscriptionRequest invoke(FeedTopic feedTopic) {
-						return new ForwardedSubscriptionRequest(interactor.Id, feedTopic.Feed, feedTopic.Topic, false);
+						return new ForwardedSubscriptionRequest(interactor.Id, feedTopic.getFeed(), feedTopic.getTopic(), false);
 					}
 				});
         // Inform those interested that this interactor is no longer subscribed to these topics.
@@ -150,11 +150,11 @@ public class SubscriptionManager {
 
     public void sendUnicastData(Interactor publisher, UnicastData unicastData) {
         // Can we find this client in the subscribers to this topic?
-        Interactor subscriber = Enumerable.create(_repository.GetSubscribersToFeedAndTopic(unicastData.Feed, unicastData.Topic))
+        Interactor subscriber = Enumerable.create(_repository.GetSubscribersToFeedAndTopic(unicastData.getFeed(), unicastData.getTopic()))
                 .firstOrDefault(new UnaryFunction<Interactor, Boolean>() {
 					@Override
 					public Boolean invoke(Interactor arg) {
-						return arg.Id.equals(unicastData.ClientId);
+						return arg.Id.equals(unicastData.getClientId());
 					}
 				});
 
@@ -165,7 +165,7 @@ public class SubscriptionManager {
     }
 
     public void sendMulticastData(Interactor publisher, MulticastData multicastData) {
-    	List<Interactor> subscribers = _repository.GetSubscribersToFeedAndTopic(multicastData.Feed, multicastData.Topic);
+    	List<Interactor> subscribers = _repository.GetSubscribersToFeedAndTopic(multicastData.getFeed(), multicastData.getTopic());
         _publisherManager.sendMulticastData(publisher, subscribers, multicastData);
     }
 }

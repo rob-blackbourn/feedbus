@@ -48,7 +48,7 @@ public class PublisherManager {
 
     // TODO: Change the order of the arguments
     public void sendUnicastData(Interactor publisher, UnicastData unicastData, Interactor subscriber) {
-        _repository.addPublisher(publisher, unicastData.Feed, unicastData.Topic);
+        _repository.addPublisher(publisher, unicastData.getFeed(), unicastData.getTopic());
         try {
 			subscriber.sendMessage(unicastData);
 		} catch (InterruptedException error) {
@@ -64,7 +64,7 @@ public class PublisherManager {
 
     private void sendMulticastData(Interactor publisher, Interactor subscriber, MulticastData multicastData) {
         if (publisher != null)
-            _repository.addPublisher(publisher, multicastData.Feed, multicastData.Topic);
+            _repository.addPublisher(publisher, multicastData.getFeed(), multicastData.getTopic());
         try {
 			subscriber.sendMessage(multicastData);
 		} catch (InterruptedException error) {

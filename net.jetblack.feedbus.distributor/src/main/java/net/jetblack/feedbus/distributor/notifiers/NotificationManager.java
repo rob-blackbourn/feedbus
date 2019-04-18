@@ -54,19 +54,19 @@ public class NotificationManager {
     {
         logger.info("Handling notification request for " + notifiable + " on " + notificationRequest);
 
-        if (notificationRequest.IsAdd) {
-            if (_repository.addRequest(notifiable, notificationRequest.Feed)) {
-            	_newNotificationRequest.notify(new NotificationEventArgs(notifiable, notificationRequest.Feed));
+        if (notificationRequest.getIsAdd()) {
+            if (_repository.addRequest(notifiable, notificationRequest.getFeed())) {
+            	_newNotificationRequest.notify(new NotificationEventArgs(notifiable, notificationRequest.getFeed()));
             }
         }
         else
-            _repository.removeRequest(notifiable, notificationRequest.Feed);
+            _repository.removeRequest(notifiable, notificationRequest.getFeed());
     }
 
     public void forwardSubscription(ForwardedSubscriptionRequest forwardedSubscriptionRequest)
     {
         // Find all the interactors that wish to be notified of subscriptions to this topic.
-        Set<Interactor> notifiables = _repository.findNotifiables(forwardedSubscriptionRequest.Feed);
+        Set<Interactor> notifiables = _repository.findNotifiables(forwardedSubscriptionRequest.getFeed());
         if (notifiables == null)
             return;
 

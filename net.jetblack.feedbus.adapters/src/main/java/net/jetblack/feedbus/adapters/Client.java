@@ -115,7 +115,7 @@ public class Client implements Closeable {
             try {
                 Message message = Message.read(_inputStream);
 
-                switch (message.Type) {
+                switch (message.getType()) {
                     case MulticastData:
                         raiseOnDataOrHeartbeat((MulticastData)message);
                         break;
@@ -253,14 +253,14 @@ public class Client implements Closeable {
     }
 
     private void raiseOnForwardedSubscriptionRequest(ForwardedSubscriptionRequest message) {
-    	_forwardedSubscription.notify(new ForwardedSubscriptionEventArgs(message.ClientId, message.Feed, message.Topic, message.IsAdd));
+    	_forwardedSubscription.notify(new ForwardedSubscriptionEventArgs(message.getClientId(), message.getFeed(), message.getTopic(), message.getIsAdd()));
     }
 
     private void raiseOnDataOrHeartbeat(MulticastData message) {
-        if (message.Feed == "__admin__" && message.Topic == "heartbeat")
+        if (message.getFeed() == "__admin__" && message.getTopic() == "heartbeat")
             raiseOnHeartbeat();
         else
-            raiseOnData(message.Feed, message.Topic, message.Data, message.IsImage);
+            raiseOnData(message.getFeed(), message.getTopic(), message.getData(), message.getIsImage());
     }
 
     private void raiseOnHeartbeat() {
@@ -268,7 +268,7 @@ public class Client implements Closeable {
     }
 
     private void raiseOnData(UnicastData message) {
-        raiseOnData(message.Feed, message.Topic, message.Data, message.IsImage);
+        raiseOnData(message.getFeed(), message.getTopic(), message.getData(), message.getIsImage());
     }
 
     protected byte[] serialize(Object data) throws Exception {

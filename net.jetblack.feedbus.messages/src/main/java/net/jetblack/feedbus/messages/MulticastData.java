@@ -5,21 +5,39 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
+/**
+ * A message which sends data to all subscribers of the feed and topic.
+ */
 public class MulticastData extends Message {
 
-	public final String Feed;
-	public final String Topic;
-	public final boolean IsImage;
-	public final byte[] Data;
+	private final String _feed;
+	private final String _topic;
+	private final boolean _isImage;
+	private final byte[] _data;
 
+	/**
+	 * Construct a multicast message
+	 * 
+	 * @param feed The name of the feed.
+	 * @param topic The name of the topic.
+	 * @param isImage If true the data represents the full image, otherwise it is a delta.
+	 * @param data The data transmitted.
+	 */
     public MulticastData(String feed, String topic, boolean isImage, byte[] data) {
     	super(MessageType.MulticastData);
-	    Feed = feed;
-	    Topic = topic;
-	    IsImage = isImage;
-	    Data = data;
+	    _feed = feed;
+	    _topic = topic;
+	    _isImage = isImage;
+	    _data = data;
 	}
 
+    /**
+     * Read the body of a multicast message.
+     * 
+     * @param stream The stream from which to read.
+     * @return The multicast message read from the stream.
+     * @throws IOException Thrown if the message could not be read.
+     */
 	public static MulticastData readBody(DataInputStream stream) throws IOException {
 	    String feed = stream.readUTF();
 	    String topic = stream.readUTF();
@@ -32,29 +50,39 @@ public class MulticastData extends Message {
 	}
 	
 	@Override
-	public DataOutputStream write(DataOutputStream stream) throws IOException {
+	public void write(DataOutputStream stream) throws IOException {
 	    super.write(stream);
-	    stream.writeUTF(Feed);
-	    stream.writeUTF(Topic);
-	    stream.writeBoolean(IsImage);
-	    stream.writeInt(Data.length);
-	    stream.write(Data);
-	    return stream;
+	    stream.writeUTF(_feed);
+	    stream.writeUTF(_topic);
+	    stream.writeBoolean(_isImage);
+	    stream.writeInt(_data.length);
+	    stream.write(_data);
 	}
 	
-	@Override
-	public String toString() {
-	    return super.toString() + ", Feed=" + Feed + ", Topic=" + Topic + ", IsImage=" + IsImage + ", Data=" + Data;
+	public String getFeed() {
+		return _feed;
+	}
+	
+	public String getTopic() {
+		return _topic;
+	}
+	
+	public boolean getIsImage() {
+		return _isImage;
+	}
+	
+	public byte[] getData() {
+		return _data;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + Arrays.hashCode(Data);
-		result = prime * result + ((Feed == null) ? 0 : Feed.hashCode());
-		result = prime * result + (IsImage ? 1231 : 1237);
-		result = prime * result + ((Topic == null) ? 0 : Topic.hashCode());
+		result = prime * result + Arrays.hashCode(_data);
+		result = prime * result + ((_feed == null) ? 0 : _feed.hashCode());
+		result = prime * result + (_isImage ? 1231 : 1237);
+		result = prime * result + ((_topic == null) ? 0 : _topic.hashCode());
 		return result;
 	}
 
@@ -67,20 +95,26 @@ public class MulticastData extends Message {
 		if (getClass() != obj.getClass())
 			return false;
 		MulticastData other = (MulticastData) obj;
-		if (!Arrays.equals(Data, other.Data))
+		if (!Arrays.equals(_data, other._data))
 			return false;
-		if (Feed == null) {
-			if (other.Feed != null)
+		if (_feed == null) {
+			if (other._feed != null)
 				return false;
-		} else if (!Feed.equals(other.Feed))
+		} else if (!_feed.equals(other._feed))
 			return false;
-		if (IsImage != other.IsImage)
+		if (_isImage != other._isImage)
 			return false;
-		if (Topic == null) {
-			if (other.Topic != null)
+		if (_topic == null) {
+			if (other._topic != null)
 				return false;
-		} else if (!Topic.equals(other.Topic))
+		} else if (!_topic.equals(other._topic))
 			return false;
 		return true;
 	}
+	
+	@Override
+	public String toString() {
+	    return super.toString() + ", Feed=\"" + _feed + "\", Topic=\"" + _topic + "\", IsImage=" + _isImage + ", Data=" + _data;
+	}
+	
 }

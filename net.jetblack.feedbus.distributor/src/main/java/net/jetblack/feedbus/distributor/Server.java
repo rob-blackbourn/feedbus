@@ -104,7 +104,7 @@ public class Server implements Closeable {
     private void onMessage(InteractorMessageEventArgs event) {
         logger.fine(String.format("OnMessage(sender=%s, message=%s", event.Interactor, event.Message));
 
-        switch (event.Message.Type) {
+        switch (event.Message.getType()) {
             case MonitorRequest:
                 _subscriptionManager.requestMonitor(event.Interactor, (MonitorRequest)event.Message);
                 break;
@@ -126,7 +126,7 @@ public class Server implements Closeable {
                 break;
 
             default:
-                logger.warning(String.format("Received unknown message type %s from interactor %s.", event.Message.Type, event.Interactor));
+                logger.warning("Received unknown message type " + event.Message.getType() + " from interactor " + event.Interactor + ".");
                 break;
         }
     }
