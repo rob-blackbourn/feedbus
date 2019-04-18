@@ -2,15 +2,31 @@ package net.jetblack.feedbus.adapters;
 
 public class ForwardedSubscriptionEventArgs {
 
+    private final String _clientId;
+    private final String _feed;
+    private final String _topic;
+    private final boolean _isAdd;
+
     public ForwardedSubscriptionEventArgs(String clientId, String feed, String topic, boolean isAdd) {
-        ClientId = clientId;
-        Feed = feed;
-        Topic = topic;
-        IsAdd = isAdd;
+        _clientId = clientId;
+        _feed = feed;
+        _topic = topic;
+        _isAdd = isAdd;
     }
 
-    public final String ClientId;
-    public final String Feed;
-    public final String Topic;
-    public final boolean IsAdd;
+    public String getClientId() {
+    	return _clientId;
+    }
+    
+    public String getFeed() {
+    	return _feed;
+    }
+    
+    public String getTopic() {
+    	return _topic;
+    }
+    
+    public boolean getIsAdd() {
+    	return _isAdd;
+    }
 }

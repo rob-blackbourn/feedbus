@@ -4,11 +4,19 @@ import net.jetblack.util.EventArgs;
 
 public class ConnectionChangedEventArgs extends EventArgs {
 
-        public ConnectionChangedEventArgs(ConnectionState state, Exception error) {
-            State = state;
-            Error = error;
-        }
+    private final ConnectionState _state;
+    private final Exception _error;
 
-        public final ConnectionState State;
-        public final Exception Error;
+    public ConnectionChangedEventArgs(ConnectionState state, Exception error) {
+        _state = state;
+        _error = error;
+    }
+
+    public ConnectionState getState() {
+    	return _state;
+    }
+    
+    public Exception getError() {
+    	return _error;
+    }
 }

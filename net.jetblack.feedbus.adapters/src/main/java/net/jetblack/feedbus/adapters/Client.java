@@ -31,6 +31,9 @@ import net.jetblack.util.EventRegister;
 import net.jetblack.util.concurrent.ConcurrentEventHandler;
 import net.jetblack.util.io.ByteSerializable;
 
+/**
+ * A client for the feed bus.
+ */
 public class Client implements Closeable {
 	
 	private static final Logger logger = Logger.getLogger(Client.class.getName());
@@ -46,7 +49,20 @@ public class Client implements Closeable {
     private final EventHandler<ConnectionChangedEventArgs> _connectionChanged = new ConcurrentEventHandler<ConnectionChangedEventArgs>();
     private final EventHandler<EventArgs> _heartbeat = new ConcurrentEventHandler<EventArgs>();
 
-
+    /**
+     * A convenience method to create and start a client from system properties.
+     * 
+     * @return A feed bus client.
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException
+     * @throws SecurityException
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws ClassNotFoundException
+     */
     public static Client createFromProperties() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException, InterruptedException, ClassNotFoundException
     {
     	ConnectionConfig config = ConnectionConfig.createFromProperties();
@@ -55,13 +71,38 @@ public class Client implements Closeable {
         return create(config.getAddress(), config.getPort(), byteSerializable, config.getWriteQueueCapacity());
     }
 
-    public static Client create(String name, FeedBusConfig config, int writeQueueCapacity) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException, InterruptedException
+    /**
+     * A convenience method to create and start a client from a named configuration.
+     * @param name The name of the configuration.
+     * @param config A repository of named configuration.
+     * @return A feed bus client.
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException
+     * @throws SecurityException
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public static Client create(String name, FeedBusConfig config) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException, InterruptedException
     {
         NamedConnectionConfig connectionConfig = config.Connections.get(name);
         ByteSerializable  byteSerializer = (ByteSerializable) connectionConfig.getByteSerializerType().getConstructor().newInstance();
-        return create(connectionConfig.getAddress(), connectionConfig.getPort(), byteSerializer, writeQueueCapacity);
+        return create(connectionConfig.getAddress(), connectionConfig.getPort(), byteSerializer, connectionConfig.getWriteQueueCapacity());
     }
 
+    /**
+     * Create and start a client from the basic parameters.
+     * 
+     * @param address The address of the message broker.
+     * @param port The port of the message broker.
+     * @param byteSerializer The instance of a class used to serialize the data.
+     * @param writeQueueCapacity The capacity of the write queue.
+     * @return A feed bus client.
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public static Client create(InetAddress address, int port, ByteSerializable byteSerializer, int writeQueueCapacity) throws IOException, InterruptedException {
         Socket socket = new Socket(address, port);
 
@@ -74,13 +115,28 @@ public class Client implements Closeable {
         return client;
     }
 
+    /**
+     * Register a listener for data received events.
+     */
     public final EventRegister<DataReceivedEventArgs> DataReceived = _dataReceived;
+    /**
+     * Register a listener for data error events.
+     */
     public final EventRegister<DataErrorEventArgs> DataError = _dataError;
+    /**
+     * Register a listener for notifications.
+     */
     public final EventRegister<ForwardedSubscriptionEventArgs> ForwardedSubscription = _forwardedSubscription;
+    /**
+     * Register a listener for changes in the connection state.
+     */
     public final EventRegister<ConnectionChangedEventArgs> ConnectionChanged = _connectionChanged;
+    /**
+     * Register a listener for heart beats.
+     */
     public final EventRegister<EventArgs> Heartbeat = _heartbeat;
 
-    public Client(Socket socket, ByteSerializable byteSerializer, int writeQueueCapacity) throws IOException {
+    private Client(Socket socket, ByteSerializable byteSerializer, int writeQueueCapacity) throws IOException {
     	_socket = socket;
     	_inputStream = new DataInputStream(socket.getInputStream()); 
     	_outputStream = new DataOutputStream(socket.getOutputStream()); 
@@ -90,7 +146,7 @@ public class Client implements Closeable {
 
     private Thread _readThread, _writeThread;
     
-    public void start()
+    private void start()
     {
     	_readThread = new Thread(new Runnable() {
 			@Override
@@ -177,10 +233,24 @@ public class Client implements Closeable {
     	_connectionChanged.notify(new ConnectionChangedEventArgs(state, error));
     }
 
+    /**
+     * Add a subscription to a feed and topic.
+     * 
+     * @param feed The name of the feed.
+     * @param topic The name of the topic.
+     * @throws InterruptedException
+     */
     public void addSubscription(String feed, String topic) throws InterruptedException {
         makeSubscriptionRequest(feed, topic, true);
     }
 
+    /**
+     * Remove a subscription from a feed and topic.
+     * 
+     * @param feed The name of the feed.
+     * @param topic The name of the topic.
+     * @throws InterruptedException
+     */
     public void removeSubscription(String feed, String topic) throws InterruptedException {
         makeSubscriptionRequest(feed, topic, false);
     }
@@ -194,10 +264,22 @@ public class Client implements Closeable {
         _writeQueue.put(new SubscriptionRequest(feed, topic, isAdd));
     }
 
+    /**
+     * Start to monitor a feed.
+     * 
+     * @param feed The name of the feed.
+     * @throws InterruptedException
+     */
     public void addMonitor(String feed) throws InterruptedException {
         makeMonitorRequest(feed, true);
     }
 
+    /**
+     * Stop monitoring a feed.
+     * 
+     * @param feed The name of the feed.
+     * @throws InterruptedException
+     */
     public void removeMonitor(String feed) throws InterruptedException {
         makeMonitorRequest(feed, false);
     }
@@ -209,10 +291,22 @@ public class Client implements Closeable {
         _writeQueue.put(new MonitorRequest(feed, isAdd));
     }
 
+    /**
+     * Request notification of subscriptions on a feed.
+     * 
+     * @param feed The name of the feed.
+     * @throws InterruptedException
+     */
     public void addNotification(String feed) throws InterruptedException {
         makeNotificationRequest(feed, true);
     }
 
+    /**
+     * Stop receiving notifications of subscriptions to a feed.
+     * 
+     * @param feed The name of the feed.
+     * @throws InterruptedException
+     */
     public void removeNotification(String feed) throws InterruptedException {
         makeNotificationRequest(feed, false);
     }
@@ -224,6 +318,15 @@ public class Client implements Closeable {
         _writeQueue.put(new NotificationRequest(feed, isAdd));
     }
 
+    /**
+     * Send data to a specific client for a given feed and topic.
+     * 
+     * @param clientId The identify of the client.
+     * @param feed The name of the feed.
+     * @param topic The name of the topic.
+     * @param isImage If true the data represents an image, otherwise it is a delta.
+     * @param data The data transmitted.
+     */
     public void send(String clientId, String feed, String topic, boolean isImage, Object data) {
         if (feed == null)
             throw new NullArgumentException();
@@ -238,6 +341,14 @@ public class Client implements Closeable {
         }
     }
 
+    /**
+     * Publish data to all subscribers of a feed and topic.
+     * 
+     * @param feed The name of the feed.
+     * @param topic The name of the topic.
+     * @param isImage If true the data represents an image, otherwise it is a delta.
+     * @param data The data transmitted.
+     */
     public void publish(String feed, String topic, boolean isImage, Object data) {
         if (feed == null)
             throw new NullArgumentException();
