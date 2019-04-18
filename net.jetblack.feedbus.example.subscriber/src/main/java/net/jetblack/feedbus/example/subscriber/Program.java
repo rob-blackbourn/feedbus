@@ -31,11 +31,14 @@ public class Program {
 				}
 			});
 
+			System.out.println("Type the name of the feed (e.g. LSE)");
+			String feed = scanner.next();
 			
-			System.out.println("Type the name of the ticker (e.g. SBRY)");
-			String ticker = scanner.next();
+			System.out.println("Type the name of the topic (e.g. SBRY)");
+			String topic = scanner.next();
 
-			client.addSubscription("LSE", ticker);
+			System.out.println("Subscribing to feed \"" + feed + "\" topic \"" + topic + "\"");
+			client.addSubscription(feed, topic);
 
 			System.out.println("Press n to close");
 			scanner.next();

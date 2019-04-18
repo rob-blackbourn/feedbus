@@ -76,7 +76,8 @@ public class Cache {
         cacheItem.getClientStates().remove(clientId);
 
         // If there are no clients and no data remove the item.
-        if (cacheItem.getClientStates().size() == 0 && cacheItem.getData() == null) {
+        if (cacheItem.getClientStates().size() == 0 || cacheItem.getData() == null) {
+        	logger.info("Stop publishing feed \"" + feed + "\" topic \"" +topic + "\"");
             _cacheItems.remove(topic);
         }
     }

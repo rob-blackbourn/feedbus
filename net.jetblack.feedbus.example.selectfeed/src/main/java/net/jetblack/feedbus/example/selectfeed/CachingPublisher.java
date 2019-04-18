@@ -21,10 +21,12 @@ public class CachingPublisher {
 			@Override
 			public void onEvent(ForwardedSubscriptionEventArgs event) {
 				synchronized (_gate) {
-					if (event.IsAdd)
+					if (event.IsAdd) {
 						_cache.addSubscription(event.ClientId, event.Feed, event.Topic);
-					else
+					}
+					else {
 						_cache.removeSubscription(event.ClientId, event.Feed, event.Topic);
+					}
 				}
 
 			}

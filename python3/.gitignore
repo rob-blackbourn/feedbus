@@ -1,0 +1,11 @@
+.venv
+venv
+__pycache__
+dist
+*.egg-info
+.eggs
+.vscode
+.idea
+.pytest_cache
+.history
+pip-wheel-metadata
