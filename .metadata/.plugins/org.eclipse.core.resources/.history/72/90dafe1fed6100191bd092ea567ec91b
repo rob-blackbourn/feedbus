@@ -1,0 +1,15 @@
+package net.jetblack.feedbus.adapters;
+
+import net.jetblack.util.EventArgs;
+
+public class ConnectionChangedEventArgs extends EventArgs {
+
+    private final ConnectionState State;
+    private final Exception Error;
+
+    public ConnectionChangedEventArgs(ConnectionState state, Exception error) {
+        State = state;
+        Error = error;
+    }
+
+}

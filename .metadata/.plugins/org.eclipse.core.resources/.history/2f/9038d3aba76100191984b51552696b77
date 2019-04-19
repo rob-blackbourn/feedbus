@@ -1,0 +1,15 @@
+# Distributor
+
+# Running
+
+The following properties are available:
+
+```
+```
+
+The following arguments are useful.
+
+```
+-Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n"
+-Dnet.jetblack.feedbus.distributor.HEARTBEAT_INTERVAL=0
+```

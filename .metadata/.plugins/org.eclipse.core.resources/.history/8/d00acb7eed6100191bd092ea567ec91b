@@ -1,0 +1,44 @@
+package net.jetblack.feedbus.adapters;
+
+public class DataErrorEventArgs {
+
+    private final boolean _isSending;
+    private final String Feed;
+    private final String Topic;
+    private final boolean IsImage;
+    private final Object Data;
+    private final Exception Error;
+
+    public DataErrorEventArgs(boolean isSending, String feed, String topic, boolean isImage, Object data, Exception error) {
+        _isSending = isSending;
+        Feed = feed;
+        Topic = topic;
+        IsImage = isImage;
+        Data = data;
+        Error = error;
+    }
+
+    public boolean getIsSending() {
+    	return _isSending;
+    }
+    
+    public String getFeed() {
+    	return Feed;
+    }
+    
+    public String getTopic() {
+    	return Topic;
+    }
+    
+    public boolean getIsImage() {
+    	return IsImage;
+    }
+    
+    public Object getData() {
+    	return Data;
+    }
+    
+    public Exception getError() {
+    	return Error;
+    }
+}
