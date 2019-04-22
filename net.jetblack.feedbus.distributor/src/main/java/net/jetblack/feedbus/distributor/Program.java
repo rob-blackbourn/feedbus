@@ -10,11 +10,19 @@ public class Program {
 	/**
 	 * Starts a distributor.
 	 * 
-	 * @param args No arguments are required.
+	 * <ul>
+	 *   <li>--host 0.0.0.0</li>
+	 *   <li>--port 30011</li>
+	 *   <li>--event-queue-capacity 8096</li>
+	 *   <li>--write-queue-capacity 0896</li>
+	 *   <li>--heartbeat-interval 1000</li>
+	 * </ul>
+	 * 
+	 * @param args Command line arguments.
 	 */
 	public static void main(String[] args) {
 		try {
-			DistributorConfig config = DistributorConfig.createFromProperties();
+			DistributorConfig config = DistributorConfig.createFromArgs(args);
 
 			Server server = new Server(
 					config.getAddress(), 

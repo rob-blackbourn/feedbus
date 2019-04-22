@@ -175,4 +175,53 @@ public class DistributorConfig {
 		
 		return new DistributorConfig(address, port, eventQueueLength, writeQueueLength, heartbeatInterval);
     }
+    
+    public static DistributorConfig createFromArgs(String[] args) throws UnknownHostException {
+    	DistributorConfig config = createFromProperties();
+    	
+    	int argc = 0;
+    	while (argc < args.length) {
+    		if (args[argc] == "--host") {
+    			if (++argc > args.length) {
+    				System.err.println("Invalid --host");
+    				System.exit(1);
+    			}
+    			config.setAddress(InetAddress.getByName(args[argc]));
+    		}
+    		else if (args[argc] == "--port") {
+    			if (++argc > args.length) {
+    				System.err.println("Invalid --port");
+    				System.exit(1);
+    			}
+    			config.setPort(Integer.parseInt(args[argc]));
+    		}
+    		else if (args[argc] == "--event-queue-capacity") {
+    			if (++argc > args.length) {
+    				System.err.println("Invalid --event-queue-capacity");
+    				System.exit(1);
+    			}
+    			config.setEventQueueCapacity(Integer.parseInt(args[argc]));
+    		}
+    		else if (args[argc] == "--write-queue-capacity") {
+    			if (++argc > args.length) {
+    				System.err.println("Invalid --write-queue-capacity");
+    				System.exit(1);
+    			}
+    			config.setWriteQueueCapacity(Integer.parseInt(args[argc]));
+    		}
+    		else if (args[argc] == "--heartbeat-interval") {
+    			if (++argc > args.length) {
+    				System.err.println("Invalid --heartbeat-interval");
+    				System.exit(1);
+    			}
+    			config.setHeartbeatInterval(Long.parseLong(args[argc]));
+    		}
+    		else {
+    			System.err.println("Unknown argument: " + args[argc]);
+    			System.exit(1);
+    		}
+    	}
+    	
+    	return config;
+    }
 }
