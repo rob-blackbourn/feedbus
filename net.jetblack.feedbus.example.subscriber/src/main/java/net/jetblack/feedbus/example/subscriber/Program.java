@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 import net.jetblack.feedbus.adapters.Client;
+import net.jetblack.feedbus.adapters.ConnectionChangedEventArgs;
 import net.jetblack.feedbus.adapters.DataReceivedEventArgs;
 import net.jetblack.util.EventListener;
 
@@ -28,6 +29,14 @@ public class Program {
 					for (Map.Entry<String, Object> item : data.entrySet()) {
 						System.out.println(item.getKey() + ": " + item.getValue());
 					}
+				}
+			});
+			
+			client.ConnectionChanged.add(new EventListener<ConnectionChangedEventArgs>() {
+				
+				@Override
+				public void onEvent(ConnectionChangedEventArgs event) {
+					System.out.println("Connection changed: " + event);
 				}
 			});
 

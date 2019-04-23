@@ -19,4 +19,9 @@ public class ConnectionChangedEventArgs extends EventArgs {
     public Exception getError() {
     	return _error;
     }
+    
+    @Override
+    public String toString() {
+    	return "State=" + _state + ", Error=" + _error;
+    }
 }
