@@ -28,9 +28,9 @@ gradle-app.setting
 *.class
 
 # eclipse project file
-.settings/
-.classpath
-.project
+#.settings
+#.classpath
+#.project
 
 
 #/.metadata/
