@@ -1,14 +1,14 @@
 package net.jetblack.feedbus.distributor.interactors;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import net.jetblack.util.Disposable;
 import net.jetblack.util.concurrent.EventQueue;
 
-public class InteractorListener implements Disposable {
+public class InteractorListener implements Closeable {
 
     private final EventQueue<InteractorEventArgs> _eventQueue;
     private final ServerSocket _listener;
@@ -25,12 +25,8 @@ public class InteractorListener implements Disposable {
         return Interactor.create(socket, _eventQueue, _writeQueueCapacity);
     }
 
-    @Override
-    public void dispose() {
-        try {
-			_listener.close();
-		} catch (IOException e) {
-			// Nothing to do
-		}
-    }
+	@Override
+	public void close() throws IOException {
+		_listener.close();
+	}
 }

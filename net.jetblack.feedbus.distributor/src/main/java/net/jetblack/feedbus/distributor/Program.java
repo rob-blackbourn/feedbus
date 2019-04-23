@@ -1,5 +1,8 @@
 package net.jetblack.feedbus.distributor;
 
+import java.io.IOException;
+import java.util.logging.Logger;
+
 import net.jetblack.feedbus.distributor.config.DistributorConfig;
 
 /**
@@ -30,11 +33,21 @@ public class Program {
 					config.getEventQueueCapacity(), 
 					config.getWriteQueueCapacity());
 	        server.start(config.getHeartbeatInterval());
+
 	        
-	        System.out.println("Press <ENTER> to quit");
-	        System.in.read();
+	        Runtime.getRuntime().addShutdownHook(new Thread() {
+	        	public void run() {
+	        		try {
+						server.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	        	}
+	        });
 	        
-	        server.close();
+	        Thread.currentThread().join();
+	        System.out.println("Done");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

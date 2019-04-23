@@ -172,7 +172,7 @@ public class Server implements Closeable {
 		}
         
         try {
-        	_acceptThread.interrupt();
+        	_acceptor.close();
 			_acceptThread.join();
 		} catch (InterruptedException e) {
 			// Nothing to do.

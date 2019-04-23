@@ -1,2 +1,0 @@
-INDEX VERSION 1.131+/home/rtb/Development/JetBlack/feedbus/.metadata/.plugins/org.eclipse.jdt.core
-1017180142.index

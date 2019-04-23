@@ -1,5 +1,6 @@
 package net.jetblack.feedbus.distributor;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
@@ -15,7 +16,7 @@ import net.jetblack.util.concurrent.EventQueue;
 /**
  * Accept incoming connections.
  */
-public class Acceptor implements Runnable {
+public class Acceptor implements Runnable, Closeable {
 
 	private static final Logger logger = Logger.getLogger(Acceptor.class.getName());
 
@@ -23,6 +24,8 @@ public class Acceptor implements Runnable {
 	private final int _writeQueueCapacity;
 	private final InetAddress _address;
 	private final int _port;
+
+	private InteractorListener _listener;
 
 	/**
 	 * Constructs the acceptor.
@@ -52,9 +55,8 @@ public class Acceptor implements Runnable {
 
 	@Override
 	public void run() {
-		InteractorListener listener;
 		try {
-			listener = new InteractorListener(_address, _port, _eventQueue, _writeQueueCapacity);
+			_listener = new InteractorListener(_address, _port, _eventQueue, _writeQueueCapacity);
 		} catch (IOException error) {
 			logger.log(Level.SEVERE, "Failed to create server socket", error);
 			return;
@@ -62,7 +64,7 @@ public class Acceptor implements Runnable {
 
 		while (!Thread.currentThread().isInterrupted()) {
 			try {
-				Interactor interactor = listener.accept();
+				Interactor interactor = _listener.accept();
 				_eventQueue.enqueue(new InteractorConnectedEventArgs(interactor));
 			} catch (InterruptedException error) {
 				logger.info("Thread interrupted - exiting");
@@ -81,5 +83,12 @@ public class Acceptor implements Runnable {
 	@Override
 	public String toString() {
 		return String.format("Address=%1$s, Port=%2$d, WriteQueueCapacity=%3$d", _address, _port, _writeQueueCapacity);
+	}
+
+	@Override
+	public void close() throws IOException {
+		if (_listener != null) {
+			_listener.close();
+		}
 	}
 }
