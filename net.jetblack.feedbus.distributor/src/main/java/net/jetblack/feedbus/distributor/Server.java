@@ -13,6 +13,7 @@ import net.jetblack.feedbus.distributor.interactors.InteractorErrorEventArgs;
 import net.jetblack.feedbus.distributor.interactors.InteractorEventArgs;
 import net.jetblack.feedbus.distributor.interactors.InteractorManager;
 import net.jetblack.feedbus.distributor.interactors.InteractorMessageEventArgs;
+import net.jetblack.feedbus.distributor.interactors.InteractorShutdownEventArgs;
 import net.jetblack.feedbus.distributor.notifiers.NotificationManager;
 import net.jetblack.feedbus.distributor.subscriptions.SubscriptionManager;
 import net.jetblack.feedbus.messages.MonitorRequest;
@@ -50,7 +51,7 @@ public class Server implements Closeable {
      * @param writeQueueCapacity The capacity of the write queue on an interactor.
      */
     public Server(InetAddress address, int port, int eventQueueCapacity, int writeQueueCapacity) {
-        _eventQueue = new EventQueue<InteractorEventArgs>(eventQueueCapacity);
+        _eventQueue = new EventQueue<InteractorEventArgs>(eventQueueCapacity, new InteractorShutdownEventArgs());
         
         _eventQueue.Listener.add(new EventListener<InteractorEventArgs>() {
 			@Override
@@ -97,12 +98,20 @@ public class Server implements Closeable {
     }
 
     private void onInteractorEvent(InteractorEventArgs args) {
-        if (args instanceof InteractorConnectedEventArgs)
+    	if (args instanceof InteractorShutdownEventArgs) {
+    		try {
+				_interactorManager.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	} else  if (args instanceof InteractorConnectedEventArgs) {
             onInteractorConnected((InteractorConnectedEventArgs)args);
-        else if (args instanceof InteractorMessageEventArgs)
+        } else if (args instanceof InteractorMessageEventArgs) {
             onMessage((InteractorMessageEventArgs)args);
-        else if (args instanceof InteractorErrorEventArgs)
+        } else if (args instanceof InteractorErrorEventArgs) {
             onInteractorError((InteractorErrorEventArgs)args);
+        }
     }
 
     private void onInteractorConnected(InteractorConnectedEventArgs event) {
@@ -159,29 +168,25 @@ public class Server implements Closeable {
 	@Override
 	public void close() throws IOException {
         logger.info("Stopping server");
-
-        if (_heartbeatTimer != null) {
-        	_heartbeatTimer.cancel();
-        }
-
-        try {
-			_interactorManager.close();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
         
         try {
+        	logger.fine("Closing the acceptor");
         	_acceptor.close();
 			_acceptThread.join();
 		} catch (InterruptedException e) {
 			// Nothing to do.
 		}
+
+        if (_heartbeatTimer != null) {
+        	logger.fine("Cancelling heartbeats");
+        	_heartbeatTimer.cancel();
+        }
         
         try {
-        	_eventQueueThread.interrupt();
+        	logger.fine("Closing the event queue");
+			_eventQueue.close();
 			_eventQueueThread.join();
-		} catch (InterruptedException e) {
+		} catch (Exception e) {
 			// Nothing to do.
 		}
 

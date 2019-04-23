@@ -1,6 +1,8 @@
 package net.jetblack.feedbus.distributor;
 
 import java.io.IOException;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 import net.jetblack.feedbus.distributor.config.DistributorConfig;
 
@@ -38,6 +40,7 @@ public class Program {
 	        	public void run() {
 	        		try {
 						server.close();
+				        LogManager.getLogManager().reset();
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

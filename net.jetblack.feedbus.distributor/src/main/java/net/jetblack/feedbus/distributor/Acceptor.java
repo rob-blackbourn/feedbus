@@ -35,7 +35,11 @@ public class Acceptor implements Runnable, Closeable {
 	 * @param eventQueue A queue with which the service will communicate with the client.
 	 * @param writeQueueCapacity The capacity of the interactor write queue.
 	 */
-	public Acceptor(InetAddress address, int port, EventQueue<InteractorEventArgs> eventQueue, int writeQueueCapacity) {
+	public Acceptor(
+			InetAddress address, 
+			int port, 
+			EventQueue<InteractorEventArgs> eventQueue, 
+			int writeQueueCapacity) {
 		_eventQueue = eventQueue;
 		_address = address;
 		_port = port;
