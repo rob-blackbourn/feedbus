@@ -1,7 +1,6 @@
 package net.jetblack.feedbus.distributor;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import net.jetblack.feedbus.distributor.config.DistributorConfig;
 
