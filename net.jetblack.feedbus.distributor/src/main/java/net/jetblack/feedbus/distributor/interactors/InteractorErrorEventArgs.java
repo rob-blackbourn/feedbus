@@ -13,4 +13,8 @@ public class InteractorErrorEventArgs extends InteractorEventArgs {
 		return _error;
 	}
 
+	@Override
+	public String toString() {
+		return super.toString() + ", Error=" + _error.getMessage();
+	}
 }

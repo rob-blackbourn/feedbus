@@ -47,8 +47,10 @@ public class UnicastData extends Message {
 	    String topic = stream.readUTF();
 	    boolean isImage = stream.readBoolean();
 	    int len = stream.readInt();
-	    byte[] data = new byte[len];
-	    stream.readFully(data);
+	    byte[] data = len == 0 ? null : new byte[len];
+	    if (len > 0) {
+	    	stream.readFully(data);
+	    }
 	    return new UnicastData(clientId, feed, topic, isImage, data);
 	}
 
@@ -59,8 +61,12 @@ public class UnicastData extends Message {
 	    stream.writeUTF(_feed);
 	    stream.writeUTF(_topic);
 	    stream.writeBoolean(_isImage);
-	    stream.writeInt(_data.length);
-	    stream.write(_data);
+	    if (_data == null) {
+		    stream.writeInt(0);
+	    } else {
+		    stream.writeInt(_data.length);
+		    stream.write(_data);
+	    }
 	}
 
 	/**

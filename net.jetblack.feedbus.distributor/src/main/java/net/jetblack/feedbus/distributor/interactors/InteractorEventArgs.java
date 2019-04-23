@@ -13,4 +13,9 @@ public class InteractorEventArgs extends EventArgs {
     public Interactor getInteractor() {
     	return _interactor;
     }
+    
+    @Override
+    public String toString() {
+    	return "Interactor=" + _interactor;
+    }
 }

@@ -14,4 +14,9 @@ public class InteractorMessageEventArgs extends InteractorEventArgs {
 	public Message getMessage() {
 		return _message;
 	}
+	
+	@Override
+	public String toString() {
+		return super.toString() + ", Message=" + _message;
+	}
 }
