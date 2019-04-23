@@ -181,45 +181,52 @@ public class DistributorConfig {
     	
     	int argc = 0;
     	while (argc < args.length) {
-    		if ("--host".equals(args[argc])) {
-    			if (++argc > args.length) {
+    		if (args[argc].startsWith("--host")) {
+    			String[] parts = args[argc].split("=", 2);
+    			if (parts.length != 2) {
     				System.err.println("Invalid --host");
     				System.exit(1);
     			}
-    			config.setAddress(InetAddress.getByName(args[argc]));
+    			config.setAddress(InetAddress.getByName(parts[1]));
     		}
-    		else if ("--port".equals(args[argc])) {
-    			if (++argc > args.length) {
+    		else if (args[argc].startsWith("--port")) {
+    			String[] parts = args[argc].split("=", 2);
+    			if (parts.length != 2) {
     				System.err.println("Invalid --port");
     				System.exit(1);
     			}
-    			config.setPort(Integer.parseInt(args[argc]));
+    			config.setPort(Integer.parseInt(parts[1]));
     		}
-    		else if ("--event-queue-capacity".equals(args[argc])) {
-    			if (++argc > args.length) {
+    		else if (args[argc].startsWith("--event-queue-capacity")) {
+    			String[] parts = args[argc].split("=", 2);
+    			if (parts.length != 2) {
     				System.err.println("Invalid --event-queue-capacity");
     				System.exit(1);
     			}
-    			config.setEventQueueCapacity(Integer.parseInt(args[argc]));
+    			config.setEventQueueCapacity(Integer.parseInt(parts[1]));
     		}
-    		else if ("--write-queue-capacity".equals(args[argc])) {
-    			if (++argc > args.length) {
+    		else if (args[argc].startsWith("--write-queue-capacity")) {
+    			String[] parts = args[argc].split("=", 2);
+    			if (parts.length != 2) {
     				System.err.println("Invalid --write-queue-capacity");
     				System.exit(1);
     			}
-    			config.setWriteQueueCapacity(Integer.parseInt(args[argc]));
+    			config.setWriteQueueCapacity(Integer.parseInt(parts[1]));
     		}
-    		else if ("--heartbeat-interval".equals(args[argc])) {
-    			if (++argc > args.length) {
+    		else if (args[argc].startsWith("--heartbeat-interval")) {
+    			String[] parts = args[argc].split("=", 2);
+    			if (parts.length != 2) {
     				System.err.println("Invalid --heartbeat-interval");
     				System.exit(1);
     			}
-    			config.setHeartbeatInterval(Long.parseLong(args[argc]));
+    			config.setHeartbeatInterval(Long.parseLong(parts[1]));
     		}
     		else {
     			System.err.println("Unknown argument: " + args[argc]);
     			System.exit(1);
     		}
+    		
+    		++argc;
     	}
     	
     	return config;
