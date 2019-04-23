@@ -181,35 +181,35 @@ public class DistributorConfig {
     	
     	int argc = 0;
     	while (argc < args.length) {
-    		if (args[argc] == "--host") {
+    		if ("--host".equals(args[argc])) {
     			if (++argc > args.length) {
     				System.err.println("Invalid --host");
     				System.exit(1);
     			}
     			config.setAddress(InetAddress.getByName(args[argc]));
     		}
-    		else if (args[argc] == "--port") {
+    		else if ("--port".equals(args[argc])) {
     			if (++argc > args.length) {
     				System.err.println("Invalid --port");
     				System.exit(1);
     			}
     			config.setPort(Integer.parseInt(args[argc]));
     		}
-    		else if (args[argc] == "--event-queue-capacity") {
+    		else if ("--event-queue-capacity".equals(args[argc])) {
     			if (++argc > args.length) {
     				System.err.println("Invalid --event-queue-capacity");
     				System.exit(1);
     			}
     			config.setEventQueueCapacity(Integer.parseInt(args[argc]));
     		}
-    		else if (args[argc] == "--write-queue-capacity") {
+    		else if ("--write-queue-capacity".equals(args[argc])) {
     			if (++argc > args.length) {
     				System.err.println("Invalid --write-queue-capacity");
     				System.exit(1);
     			}
     			config.setWriteQueueCapacity(Integer.parseInt(args[argc]));
     		}
-    		else if (args[argc] == "--heartbeat-interval") {
+    		else if ("--heartbeat-interval".equals(args[argc])) {
     			if (++argc > args.length) {
     				System.err.println("Invalid --heartbeat-interval");
     				System.exit(1);
