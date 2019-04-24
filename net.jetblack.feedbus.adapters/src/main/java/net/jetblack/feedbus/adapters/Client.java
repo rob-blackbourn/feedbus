@@ -71,6 +71,13 @@ public class Client implements Closeable {
         return create(config.getAddress(), config.getPort(), byteSerializable, config.getWriteQueueCapacity());
     }
 
+    public static Client create(ConnectionConfig config) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException, InterruptedException, ClassNotFoundException
+    {
+    	Class<? extends ByteSerializable> klass = config.getByteSerializerType();
+    	ByteSerializable byteSerializable = klass.getDeclaredConstructor().newInstance();
+        return create(config.getAddress(), config.getPort(), byteSerializable, config.getWriteQueueCapacity());
+    }
+
     /**
      * A convenience method to create and start a client from a named configuration.
      * @param name The name of the configuration.

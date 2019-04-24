@@ -2,9 +2,6 @@ package net.jetblack.feedbus.distributor;
 
 import java.io.IOException;
 import java.util.logging.LogManager;
-import java.util.logging.Logger;
-
-import net.jetblack.feedbus.distributor.config.DistributorConfig;
 
 /**
  * The entry point for starting a distributor.
@@ -26,14 +23,14 @@ public class Program {
 	 */
 	public static void main(String[] args) {
 		try {
-			DistributorConfig config = DistributorConfig.createFromArgs(args);
+			ProgramArgs programArgs = ProgramArgs.parse(args);
 
 			Server server = new Server(
-					config.getAddress(), 
-					config.getPort(), 
-					config.getEventQueueCapacity(), 
-					config.getWriteQueueCapacity());
-	        server.start(config.getHeartbeatInterval());
+					programArgs.getConfig().getAddress(), 
+					programArgs.getConfig().getPort(), 
+					programArgs.getConfig().getEventQueueCapacity(), 
+					programArgs.getConfig().getWriteQueueCapacity());
+	        server.start(programArgs.getConfig().getHeartbeatInterval());
 
 	        
 	        Runtime.getRuntime().addShutdownHook(new Thread() {

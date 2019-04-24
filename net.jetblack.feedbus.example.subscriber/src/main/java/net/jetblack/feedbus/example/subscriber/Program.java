@@ -1,7 +1,6 @@
 package net.jetblack.feedbus.example.subscriber;
 
 import java.util.Map;
-import java.util.Scanner;
 
 import net.jetblack.feedbus.adapters.Client;
 import net.jetblack.feedbus.adapters.ConnectionChangedEventArgs;
@@ -10,14 +9,20 @@ import net.jetblack.util.EventListener;
 
 public class Program {
 
+	// --byte-serializer-type net.jetblack.feedbus.json.JsonSerializer 
 	public static void main(String[] args) {
 		
-		System.setProperty("net.jetblack.feedbus.adapters.SERIALIZER", "net.jetblack.feedbus.json.JsonSerializer");
-		
-		Scanner scanner = new Scanner(System.in);
-
 		try {
-			Client client = Client.createFromProperties();
+			ProgramArgs programArgs = ProgramArgs.parse(args);
+			
+			String[] remainingArgs = programArgs.getRemaining();
+			if (remainingArgs.length != 2) {
+				System.out.println("Usage: subscriber [options] feed topic");
+				System.exit(1);
+			}
+
+			Client client = Client.create(programArgs.getConfig());
+			
 			
 			client.DataReceived.add(new EventListener<DataReceivedEventArgs>() {
 				
@@ -40,24 +45,14 @@ public class Program {
 				}
 			});
 
-			System.out.println("Type the name of the feed (e.g. LSE)");
-			String feed = scanner.next();
-			
-			System.out.println("Type the name of the topic (e.g. SBRY)");
-			String topic = scanner.next();
 
+			String feed = remainingArgs[0];
+			String topic = remainingArgs[1];
+			
 			System.out.println("Subscribing to feed \"" + feed + "\" topic \"" + topic + "\"");
 			client.addSubscription(feed, topic);
 
-			System.out.println("Press n to close");
-			scanner.next();
-			
-			client.close();
-
-			System.out.println("Press n to quit");
-			scanner.next();
-			
-			scanner.close();
+			System.out.println("Press ^C to quit");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

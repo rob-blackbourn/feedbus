@@ -1,18 +1,22 @@
 package net.jetblack.feedbus.example.notifier;
 
-import java.util.Scanner;
-
 import net.jetblack.feedbus.adapters.Client;
 import net.jetblack.feedbus.adapters.ForwardedSubscriptionEventArgs;
 import net.jetblack.util.EventListener;
 
-public class Program {
+public class Notifier {
 
 	public static void main(String[] args) {
-		Scanner scanner = new Scanner(System.in);
 
 		try {
-			Client client = Client.createFromProperties();
+			ProgramArgs programArgs = ProgramArgs.parse(args);
+			String[] remainingArgs = programArgs.getRemaining();
+			if (remainingArgs.length != 1) {
+				System.out.println("Usage: notifier [options] feed");
+				System.exit(1);
+			}
+			
+			Client client = Client.create(programArgs.getConfig());
 			
 			client.ForwardedSubscription.add(new EventListener<ForwardedSubscriptionEventArgs>() {
 
@@ -23,21 +27,12 @@ public class Program {
 				
 			});
 
-			System.out.println("Press n to add the notification");
-			scanner.next();
+			String feed = remainingArgs[0];
+			System.out.println("Requesting notifications on Feed=\"" + feed + "\"");
+			client.addNotification(feed);
 			
-			client.addNotification("FOO");
-			
-			System.out.println("Press n to close");
-			scanner.next();
-			
-			client.close();
-			
-			System.out.println("Press n to quit");
-			scanner.next();
-			
-			scanner.close();
-			
+			System.out.println("Press ^C to quit");
+			Thread.currentThread().join();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

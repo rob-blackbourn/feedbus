@@ -2,11 +2,9 @@ package net.jetblack.feedbus.example.selectfeed;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import net.jetblack.feedbus.adapters.Client;
-import net.jetblack.util.Enumerable;
 
 public class Cache {
 	
@@ -104,19 +102,10 @@ public class Cache {
             cacheItem.getData().put(item.getKey(), item.getValue());
         }
 
-        for (Entry<String, Boolean> clientState : Enumerable.create(cacheItem.getClientStates()).toList())
-        {
-            if (clientState.getValue()) {
-                logger.info("Publishing update on feed \"" + feed + "\" with topic \"" + topic);
-                _client.publish(feed, topic, false, (Object)data);
-            }
-            else
-            {
-                // Deliver idividual messages to any clients yet to receive an image.
-                logger.info("Sending image on feed \"" + feed + "\" with topic \"" + topic + " to client " + clientState.getKey());
-                _client.send(clientState.getKey(), feed, topic, true, cacheItem.getData());
-                cacheItem.getClientStates().put(clientState.getKey(), true);
-            }
+        // If there are any clients listening publish the data.
+        if (cacheItem.getClientStates().size() > 0) {
+            logger.info("Publishing update on feed \"" + feed + "\" with topic \"" + topic);
+            _client.publish(feed, topic, false, (Object)data);
         }
     }
     

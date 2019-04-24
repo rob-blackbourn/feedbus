@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -22,24 +21,15 @@ public class Program {
 
 		System.setProperty("net.jetblack.feedbus.adapters.SERIALIZER", "net.jetblack.feedbus.json.JsonSerializer");
 
-		Scanner scanner = new Scanner(System.in);
-
 		try {
 			Client client = Client.createFromProperties();
 
 			CachingPublisher cachingPublisher = new CachingPublisher(client);
 
-			List<Timer> timers = StartPublishing(cachingPublisher);
+			StartPublishing(cachingPublisher);
 
-			System.out.println("Press q to quit");
-			scanner.next();
-
-			for (Timer timer : timers) {
-				timer.cancel();
-			}
-			client.close();
-
-			scanner.close();
+			System.out.println("Press ^C to quit");
+			Thread.currentThread().join();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -105,7 +95,7 @@ public class Program {
 	}
 
 	private static void PublishUpdate(CachingPublisher cachingPublisher, String feed, String topic, Map<String, Object> data) {
-		// Pevert the data a little.
+		// Perturb the data a little.
 		double bid = (double) data.get("BID");
 		double ask = (double) data.get("ASK");
 		double spread = ask - bid;
