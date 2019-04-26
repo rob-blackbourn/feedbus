@@ -7,10 +7,17 @@ import java.util.Set;
 
 import net.jetblack.feedbus.distributor.interactors.Interactor;
 
+/**
+ * The notification repository.
+ */
 public class NotificationRepository {
 
     private final Map<String, Set<Interactor>> _feedToNotifiables = new HashMap<String, Set<Interactor>>();
 
+    /**
+     * Remove an interactor.
+     * @param interactor The interactor to remove.
+     */
     public void removeInteractor(Interactor interactor) {
         // Remove the interactor where it appears in the notifiables, remembering any topics which are left without any interactors.
         Set<String> topicsWithoutInteractors = new HashSet<String>();
@@ -33,6 +40,12 @@ public class NotificationRepository {
         }
     }
 
+    /**
+     * Add a notification request.
+     * @param notifiable The interactor to be notified.
+     * @param feed The feed name.
+     * @return true if this is new.
+     */
     public boolean addRequest(Interactor notifiable, String feed)
     {
         // Find or create the set of notifiables for this feed.
@@ -49,6 +62,11 @@ public class NotificationRepository {
         return true;
     }
 
+    /**
+     * Remove a notification request.
+     * @param notifiable The interactor which no longer wants to be notified.
+     * @param feed The feed name.
+     */
     public void removeRequest(Interactor notifiable, String feed) {
         // Does this feed have any notifiable interactors?
        Set<Interactor> notifiables = _feedToNotifiables.get(feed);
@@ -72,6 +90,11 @@ public class NotificationRepository {
         _feedToNotifiables.remove(feed);
     }
 
+    /**
+     * Find interactors who wish to be notified about subscriptions to a feed.
+     * @param feed The feed name.
+     * @return The interested interactors.
+     */
     public Set<Interactor> findNotifiables(String feed) {
         Set<Interactor> interactors = _feedToNotifiables.get(feed);
         return interactors == null ? null : interactors;

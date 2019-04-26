@@ -21,7 +21,7 @@ public class CachingPublisher {
 			@Override
 			public void onEvent(ForwardedSubscriptionEventArgs event) {
 				synchronized (_gate) {
-					if (event.getIsAdd()) {
+					if (event.isAdd()) {
 						_cache.addSubscription(event.getClientId(), event.getFeed(), event.getTopic());
 					}
 					else {

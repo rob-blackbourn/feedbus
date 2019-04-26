@@ -2,6 +2,10 @@ package net.jetblack.feedbus.util.comparers;
 
 import net.jetblack.feedbus.util.invokable.BinaryFunction;
 
+/**
+ * An equality comparer.
+ * @param <T> The type of the values to compare.
+ */
 public class EqualityComparer<T> implements BinaryFunction<T, T, Boolean> {
 
 	@Override

@@ -14,6 +14,9 @@ import net.jetblack.feedbus.messages.FeedTopic;
 
 import java.util.Map.Entry;
 
+/**
+ * The subscription repository.
+ */
 public class SubscriptionRepository {
 
     // Feed->Topic->Interactor->SubscriptionCount.
@@ -21,9 +24,13 @@ public class SubscriptionRepository {
     // Feed->Topic->Interactor->SubscriptionCount.
     private final Map<String, Map<Interactor, SubscriptionState>> _monitors = new HashMap<String, Map<Interactor, SubscriptionState>>();
 
-    public SubscriptionRepository() {
-    }
-
+    /**
+     * Add a subscription.
+     * 
+     * @param subscriber The subscriber.
+     * @param feed The feed name.
+     * @param topic The topic name.
+     */
     public void addSubscription(Interactor subscriber, String feed, String topic) {
         // Find topic subscriptions for this feed.
         Map<String, Map<Interactor, SubscriptionState>> topicSubscriptions = _subscriptions.get(feed);
@@ -47,6 +54,13 @@ public class SubscriptionRepository {
         subscriptionState.Count = subscriptionState.Count + 1;
     }
 
+    /**
+     * Remove a subscription.
+     * @param subscriber The subscriber.
+     * @param feed The feed name.
+     * @param topic The topic name.
+     * @param removeAll If true remove all subscriptions.
+     */
     public void removeSubscription(Interactor subscriber, String feed, String topic, boolean removeAll) {
         // Can we find topic subscriptions this feed?
         Map<String, Map<Interactor, SubscriptionState>> topicSubscriptions = _subscriptions.get(feed);
@@ -77,6 +91,11 @@ public class SubscriptionRepository {
             _subscriptions.remove(feed);
     }
 
+    /**
+     * Add a monitor to the feed.
+     * @param monitor The interactor.
+     * @param feed The feed name.
+     */
     public void addMonitor(Interactor monitor, String feed) {
         // Find monitors to the feed.
         Map<Interactor, SubscriptionState> feedMonitors = _monitors.get(feed); 
@@ -94,6 +113,12 @@ public class SubscriptionRepository {
         subscriptionState.Count = subscriptionState.Count + 1;
     }
 
+    /**
+     * Remove the monitor to a feed.
+     * @param monitor The interactor.
+     * @param feed The feed name.
+     * @param removeAll If true remove all monitors.
+     */
     public void removeMonitor(Interactor monitor, String feed, boolean removeAll) {
         // Can we find monitors for this feed in the cache?
         Map<Interactor, SubscriptionState> feedMonitors = _monitors.get(feed);
@@ -117,6 +142,11 @@ public class SubscriptionRepository {
         }
     }
 
+    /**
+     * Find the feeds and topics for a subscriber.
+     * @param subscriber The subscriber.
+     * @return The subscribed feeds and topics.
+     */
     public List<FeedTopic> findFeedTopicsBySubscriber(Interactor subscriber) {
     	
     	return Enumerable.create(_subscriptions)
@@ -148,6 +178,12 @@ public class SubscriptionRepository {
 			}).toList(new ArrayList<FeedTopic>());
     }
 
+    /**
+     * Get all subscribers to a given feed and topic.
+     * @param feed The feed name.
+     * @param topic The topic name.
+     * @return The subscribers.
+     */
     public List<Interactor> GetSubscribersToFeedAndTopic(String feed, String topic) {
     	List<Interactor> subscribers = new ArrayList<Interactor>();
 
@@ -174,6 +210,11 @@ public class SubscriptionRepository {
         return subscribers;
     }
 
+    /**
+     * Get the subscribers to a feed.
+     * @param feed The feed name.
+     * @return Subscribers to the feed and the topics subscriber to.
+     */
     public List<KeyValuePair<String, Set<Interactor>>> getSubscribersToFeed(String feed) {
     	List<KeyValuePair<String, Set<Interactor>>> subscribersToFeed = new ArrayList<KeyValuePair<String, Set<Interactor>>>(); 
     	

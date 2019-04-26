@@ -31,26 +31,50 @@ public class DataErrorEventArgs {
         _error = error;
     }
 
-    public boolean getIsSending() {
+    /**
+     * Returns true if sending.
+     * @return true if sending.
+     */
+    public boolean isSending() {
     	return _isSending;
     }
     
+    /**
+     * Gets the feed name.
+     * @return The feed name.
+     */
     public String getFeed() {
     	return _feed;
     }
     
+    /**
+     * Gets the topic name.
+     * @return The topic name.
+     */
     public String getTopic() {
     	return _topic;
     }
     
-    public boolean getIsImage() {
+    /**
+     * Gets whether the data represents an image.
+     * @return true of the data represents an image.
+     */
+    public boolean isImage() {
     	return _isImage;
     }
     
+    /**
+     * Gets the data.
+     * @return The data.
+     */
     public Object getData() {
     	return _data;
     }
     
+    /**
+     * Gets the error.
+     * @return The error.
+     */
     public Exception getError() {
     	return _error;
     }

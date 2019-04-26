@@ -86,7 +86,7 @@ public class ForwardedSubscriptionRequest extends Message {
      * 
      * @return The state of the original request.
      */
-    public boolean getIsAdd() {
+    public boolean isAdd() {
     	return _isAdd;
     }
 

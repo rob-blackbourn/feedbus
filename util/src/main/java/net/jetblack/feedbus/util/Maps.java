@@ -3,8 +3,17 @@ package net.jetblack.feedbus.util;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A convenience class for Map<K, V>.
+ */
 public class Maps {
-	
+
+	/**
+	 * Creates a Map<String, Object> from the given arguments.
+	 * @param args A sequence of String and Object values.
+	 * @return A map of the supplied arguments.
+	 * @throws IllegalArgumentException If the supplied key is not a String.
+	 */
 	public static Map<String, Object> mapOf(Object...args) {
 		
 		if (args.length % 2 != 0) {

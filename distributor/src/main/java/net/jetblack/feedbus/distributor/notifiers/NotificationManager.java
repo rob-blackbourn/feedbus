@@ -14,6 +14,9 @@ import net.jetblack.feedbus.util.EventListener;
 import net.jetblack.feedbus.util.EventRegister;
 import net.jetblack.feedbus.util.concurrent.ConcurrentEventHandler;
 
+/**
+ * The notification manager.
+ */
 public class NotificationManager {
 
 	private static final Logger logger = Logger.getLogger(NotificationManager.class.getName());
@@ -23,6 +26,10 @@ public class NotificationManager {
     
     public final EventRegister<NotificationEventArgs> NewNotificationRequest = _newNotificationRequest;
 
+    /**
+     * Construct the manager.
+     * @param interactorManager The interaction manager.
+     */
     public NotificationManager(InteractorManager interactorManager)
     {
         _repository = new NotificationRepository();
@@ -50,11 +57,16 @@ public class NotificationManager {
         _repository.removeInteractor(interactor);
     }
 
+    /**
+     * Request a notification.
+     * @param notifiable The interactor to be notified.
+     * @param notificationRequest The notification request.
+     */
     public void requestNotification(Interactor notifiable, NotificationRequest notificationRequest)
     {
         logger.info("Handling notification request for " + notifiable + " on " + notificationRequest);
 
-        if (notificationRequest.getIsAdd()) {
+        if (notificationRequest.isAdd()) {
             if (_repository.addRequest(notifiable, notificationRequest.getFeed())) {
             	_newNotificationRequest.notify(new NotificationEventArgs(notifiable, notificationRequest.getFeed()));
             }
@@ -63,6 +75,10 @@ public class NotificationManager {
             _repository.removeRequest(notifiable, notificationRequest.getFeed());
     }
 
+    /**
+     * Forward a subscription to interested interactors.
+     * @param forwardedSubscriptionRequest The forwarded subscription request.
+     */
     public void forwardSubscription(ForwardedSubscriptionRequest forwardedSubscriptionRequest)
     {
         // Find all the interactors that wish to be notified of subscriptions to this topic.

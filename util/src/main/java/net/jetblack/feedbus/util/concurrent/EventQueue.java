@@ -10,6 +10,10 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;
 
+/**
+ * A concurrent eevent queue.
+ * @param <T> The type of the elements in the queue.
+ */
 public class EventQueue<T> implements Runnable, Closeable {
 	
 	private static final Logger logger = Logger.getLogger(EventQueue.class.getName());
@@ -19,15 +23,29 @@ public class EventQueue<T> implements Runnable, Closeable {
     private final T _sentinal;
     public final EventRegister<T> Listener = _listener; 
 
+    /**
+     * Construct the event queue.
+     * @param queueCapacity The capacity of the queue.
+     * @param sentinal A sentinal that indicates the queue should close.
+     */
     public EventQueue(int queueCapacity, T sentinal) {
         _interactorEventQueue = new ArrayBlockingQueue<T>(queueCapacity);
         _sentinal = sentinal;
     }
 
+    /**
+     * Add an item to the queue.
+     * @param item The item to add.
+     * @throws InterruptedException
+     */
     public void enqueue(T item) throws InterruptedException {
         _interactorEventQueue.put(item);
     }
 
+    /**
+     * Start a thread to process the queue.
+     * @return The thread.
+     */
     public Thread start() {
     	Thread thread = new Thread(this);
     	thread.start();

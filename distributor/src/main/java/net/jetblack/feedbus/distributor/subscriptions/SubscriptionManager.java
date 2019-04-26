@@ -24,6 +24,9 @@ import net.jetblack.feedbus.util.KeyValuePair;
 import net.jetblack.feedbus.util.StringComparator;
 import net.jetblack.feedbus.util.invokable.UnaryFunction;
 
+/**
+ * The subscription manager.
+ */
 public class SubscriptionManager {
 
 	private static final Logger logger = Logger.getLogger(SubscriptionManager.class.getName());
@@ -32,6 +35,11 @@ public class SubscriptionManager {
     private final NotificationManager _notificationManager;
     private final PublisherManager _publisherManager;
 
+    /**
+     * Constructs the manager.
+     * @param interactorManager The interactor manager.
+     * @param notificationManager The notification manager.
+     */
     public SubscriptionManager(InteractorManager interactorManager, NotificationManager notificationManager) {
         _notificationManager = notificationManager;
 
@@ -93,21 +101,31 @@ public class SubscriptionManager {
         
     }
 
+    /**
+     * Request a subscription.
+     * @param subscriber The subscriber.
+     * @param subscriptionRequest The request.
+     */
     public void requestSubscription(Interactor subscriber, SubscriptionRequest subscriptionRequest) {
         logger.info("Received subscription from " + subscriber + " on \"" + subscriptionRequest + "\"");
 
-        if (subscriptionRequest.getIsAdd())
+        if (subscriptionRequest.isAdd())
             _repository.addSubscription(subscriber, subscriptionRequest.getFeed(), subscriptionRequest.getTopic());
         else
             _repository.removeSubscription(subscriber, subscriptionRequest.getFeed(), subscriptionRequest.getTopic(), false);
 
-        _notificationManager.forwardSubscription(new ForwardedSubscriptionRequest(subscriber.getId(), subscriptionRequest.getFeed(), subscriptionRequest.getTopic(), subscriptionRequest.getIsAdd()));
+        _notificationManager.forwardSubscription(new ForwardedSubscriptionRequest(subscriber.getId(), subscriptionRequest.getFeed(), subscriptionRequest.getTopic(), subscriptionRequest.isAdd()));
     }
 
+    /**
+     * Request monitoring a feed.
+     * @param monitor The requester.
+     * @param monitorRequest The request.
+     */
     public void requestMonitor(Interactor monitor, MonitorRequest monitorRequest) {
         logger.info("Received monitor from " + monitor + " on \"" + monitorRequest + "\"");
 
-        if (monitorRequest.getIsAdd())
+        if (monitorRequest.isAdd())
             _repository.addMonitor(monitor, monitorRequest.getFeed());
         else
             _repository.removeMonitor(monitor, monitorRequest.getFeed(), false);
@@ -148,6 +166,11 @@ public class SubscriptionManager {
         }
     }
 
+    /**
+     * Send data to a single interactor.
+     * @param publisher The publisher
+     * @param unicastData The data.
+     */
     public void sendUnicastData(Interactor publisher, UnicastData unicastData) {
         // Can we find this client in the subscribers to this topic?
         Interactor subscriber = Enumerable.create(_repository.GetSubscribersToFeedAndTopic(unicastData.getFeed(), unicastData.getTopic()))
@@ -164,6 +187,11 @@ public class SubscriptionManager {
         _publisherManager.sendUnicastData(publisher, unicastData, subscriber);
     }
 
+    /**
+     * Send data to subscribers.
+     * @param publisher The publisher.
+     * @param multicastData The data.
+     */
     public void sendMulticastData(Interactor publisher, MulticastData multicastData) {
     	List<Interactor> subscribers = _repository.GetSubscribersToFeedAndTopic(multicastData.getFeed(), multicastData.getTopic());
         _publisherManager.sendMulticastData(publisher, subscribers, multicastData);

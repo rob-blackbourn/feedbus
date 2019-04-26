@@ -72,7 +72,7 @@ public class SubscriptionRequest extends Message {
 	 * 
 	 * @return The intention of the subscription.
 	 */
-	public boolean getIsAdd() {
+	public boolean isAdd() {
 		return _isAdd;
 	}
 

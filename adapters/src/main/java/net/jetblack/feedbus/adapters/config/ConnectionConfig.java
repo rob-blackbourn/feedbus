@@ -7,12 +7,30 @@ import net.jetblack.feedbus.adapters.Client;
 import net.jetblack.feedbus.util.io.ByteSerializable;
 import net.jetblack.feedbus.util.io.StringSerializer;
 
+/**
+ * Configuration for the client.
+ */
 public class ConnectionConfig {
-	
+
+	/**
+	 * The default server host name.
+	 */
 	public static final String DEFAULT_HOST = "localhost";
+	/**
+	 * The default server port.
+	 */
 	public static final int DEFAULT_PORT = 30011;
+	/**
+	 * The default serializer.
+	 */
 	public static final Class<? extends ByteSerializable> DEFAULT_SERIALIZER = StringSerializer.class;
+	/**
+	 * The default write queue capacity for the client.
+	 */
 	public static final int DEFAULT_WRITE_QUEUE_CAPACITY = 8096;
+	/**
+	 * The default server heartbeat interval.
+	 */
 	public static final long DEFAULT_HEARTBEAT_INTERVAL = 1000;
 
     private InetAddress _address;
@@ -21,6 +39,12 @@ public class ConnectionConfig {
     private int _writeQueueCapacity;
     private long _heartbeatInterval;
 
+    /**
+     * Create the configuration from properties.
+     * @return The configuration.
+     * @throws UnknownHostException
+     * @throws ClassNotFoundException
+     */
 	@SuppressWarnings("unchecked")
 	public static ConnectionConfig createFromProperties() throws UnknownHostException, ClassNotFoundException {
 		
@@ -46,9 +70,20 @@ public class ConnectionConfig {
 		return new ConnectionConfig(address, port, (Class<? extends ByteSerializable>)cls, writeQueueCapacity, heartbeatInterval);
 	}
 	
+	/**
+	 * Construct with defaults.
+	 */
 	public ConnectionConfig() {
 	}
 	
+	/**
+	 * Construct the configuration.
+	 * @param address The server address.
+	 * @param port The server port.
+	 * @param byteSerializerType The byte serializer type.
+	 * @param writeQueueCapacity The write queue capcity.
+	 * @param heartbeatInterval The server heart beat interval.
+	 */
 	public ConnectionConfig(InetAddress address, int port, Class<? extends ByteSerializable> byteSerializerType, int writeQueueCapacity, long heartbeatInterval) {
 		_address = address;
 		_port = port;
@@ -57,42 +92,82 @@ public class ConnectionConfig {
 		_heartbeatInterval = heartbeatInterval;
 	}
 
+	/**
+	 * Gets the server address.
+	 * @return The server address.
+	 */
     public InetAddress getAddress() {
     	return _address;
     }
     
+    /**
+     * Sets the server address.
+     * @param value The server address.
+     */
     public void setAddress(InetAddress  value)  {
     	_address = value;
     }
     
+    /**
+     * Gets the server port.
+     * @return The server port.
+     */
     public int getPort() {
     	return _port;
     }
     
+    /**
+     * Sets the server port.
+     * @param value The server port.
+     */
     public void setPort(int value) {
     	_port = value;
     }
 
+    /**
+     * Gets the byte serializer type.
+     * @return The byte serializer type.
+     */
     public Class<? extends ByteSerializable> getByteSerializerType() {
     	return _byteSerializerType;
     }
     
+    /**
+     * Sets the byte serializer type.
+     * @param value The byte serializer type.
+     */
     public void setByteSerializerType(Class<? extends ByteSerializable> value) {
     	_byteSerializerType = value;
     }
     
+    /**
+     * Gets the write queue capacity.
+     * @return The write queue capacity.
+     */
     public int getWriteQueueCapacity() {
     	return _writeQueueCapacity;
     }
     
+    /**
+     * Sets the write queue capacity.
+     * @param value The write queue capacity.
+     */
     public void setWriteQueueCapacity(int value) {
     	_writeQueueCapacity = value;
     }
 
+    /**
+     * Gets the heart beat interval.
+     * @return The heart beat interval.
+     */
     public long getHeartbeatInterval() {
     	return _heartbeatInterval;
     }
     
+    /**
+     * Sets the heart beat interval.
+     * @param value
+     */
     public void setHeartbeatInterval(long value) {
     	_heartbeatInterval = value;
     }

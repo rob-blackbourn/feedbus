@@ -5,6 +5,9 @@ import java.net.UnknownHostException;
 
 import net.jetblack.feedbus.distributor.config.DistributorConfig;
 
+/**
+ * Represents the command line arguments.
+ */
 public class ProgramArgs {
 
 	private final DistributorConfig _config;
@@ -14,15 +17,29 @@ public class ProgramArgs {
 		_config = config;
 		_remaining = remaining;
 	}
-	
+
+	/**
+	 * Get the distributor config.
+	 * @return The distributor config.
+	 */
 	public DistributorConfig getConfig() {
 		return _config;
 	}
 	
+	/**
+	 * Gets the unparsed command line.
+	 * @return The unparsed command line.
+	 */
 	public String[] getRemaining() {
 		return _remaining;
 	}
 	
+	/**
+	 * Parse the command line.
+	 * @param args The command line arguments.
+	 * @return The parsed command line.
+	 * @throws UnknownHostException
+	 */
 	public static ProgramArgs parse(String[] args) throws UnknownHostException {
 		
 	    String host = DistributorConfig.DEFAULT_HOST;

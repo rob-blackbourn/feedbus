@@ -13,9 +13,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.logging.Logger;
 
-import net.jetblack.feedbus.adapters.config.NamedConnectionConfig;
 import net.jetblack.feedbus.adapters.config.ConnectionConfig;
-import net.jetblack.feedbus.adapters.config.FeedBusConfig;
 import net.jetblack.feedbus.messages.ForwardedSubscriptionRequest;
 import net.jetblack.feedbus.messages.Message;
 import net.jetblack.feedbus.messages.MonitorRequest;
@@ -49,7 +47,6 @@ public class Client implements Closeable {
 
     /**
      * A convenience method to create and start a client from system properties.
-     * 
      * @return A feed bus client.
      * @throws InstantiationException
      * @throws IllegalAccessException
@@ -69,17 +66,9 @@ public class Client implements Closeable {
         return create(config.getAddress(), config.getPort(), byteSerializable, config.getWriteQueueCapacity());
     }
 
-    public static Client create(ConnectionConfig config) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException, InterruptedException, ClassNotFoundException
-    {
-    	Class<? extends ByteSerializable> klass = config.getByteSerializerType();
-    	ByteSerializable byteSerializable = klass.getDeclaredConstructor().newInstance();
-        return create(config.getAddress(), config.getPort(), byteSerializable, config.getWriteQueueCapacity());
-    }
-
     /**
-     * A convenience method to create and start a client from a named configuration.
-     * @param name The name of the configuration.
-     * @param config A repository of named configuration.
+     * A convenience method to create and start a client from a configuration.
+     * @param config The configuration
      * @return A feed bus client.
      * @throws InstantiationException
      * @throws IllegalAccessException
@@ -89,12 +78,13 @@ public class Client implements Closeable {
      * @throws SecurityException
      * @throws IOException
      * @throws InterruptedException
+     * @throws ClassNotFoundException
      */
-    public static Client create(String name, FeedBusConfig config) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException, InterruptedException
+    public static Client create(ConnectionConfig config) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException, InterruptedException, ClassNotFoundException
     {
-        NamedConnectionConfig connectionConfig = config.Connections.get(name);
-        ByteSerializable  byteSerializer = (ByteSerializable) connectionConfig.getByteSerializerType().getConstructor().newInstance();
-        return create(connectionConfig.getAddress(), connectionConfig.getPort(), byteSerializer, connectionConfig.getWriteQueueCapacity());
+    	Class<? extends ByteSerializable> klass = config.getByteSerializerType();
+    	ByteSerializable byteSerializable = klass.getDeclaredConstructor().newInstance();
+        return create(config.getAddress(), config.getPort(), byteSerializable, config.getWriteQueueCapacity());
     }
 
     /**
@@ -369,14 +359,14 @@ public class Client implements Closeable {
     }
 
     private void raiseOnForwardedSubscriptionRequest(ForwardedSubscriptionRequest message) {
-    	_forwardedSubscription.notify(new ForwardedSubscriptionEventArgs(message.getClientId(), message.getFeed(), message.getTopic(), message.getIsAdd()));
+    	_forwardedSubscription.notify(new ForwardedSubscriptionEventArgs(message.getClientId(), message.getFeed(), message.getTopic(), message.isAdd()));
     }
 
     private void raiseOnDataOrHeartbeat(MulticastData message) {
         if (message.getFeed() == "__admin__" && message.getTopic() == "heartbeat")
             raiseOnHeartbeat();
         else
-            raiseOnData(message.getFeed(), message.getTopic(), message.getData(), message.getIsImage());
+            raiseOnData(message.getFeed(), message.getTopic(), message.getData(), message.isImage());
     }
 
     private void raiseOnHeartbeat() {
@@ -384,7 +374,7 @@ public class Client implements Closeable {
     }
 
     private void raiseOnData(UnicastData message) {
-        raiseOnData(message.getFeed(), message.getTopic(), message.getData(), message.getIsImage());
+        raiseOnData(message.getFeed(), message.getTopic(), message.getData(), message.isImage());
     }
 
     protected byte[] serialize(Object data) throws Exception {

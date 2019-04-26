@@ -22,7 +22,7 @@ public class Notifier {
 
 				@Override
 				public void onEvent(ForwardedSubscriptionEventArgs event) {
-					System.out.println("Subscription received on feed \"" + event.getFeed() + "\" for topic \"" + event.getTopic() + "\" add "+ event.getIsAdd());
+					System.out.println("Subscription received on feed \"" + event.getFeed() + "\" for topic \"" + event.getTopic() + "\" add "+ event.isAdd());
 				}
 				
 			});

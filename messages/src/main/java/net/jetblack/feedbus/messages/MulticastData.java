@@ -73,7 +73,7 @@ public class MulticastData extends Message {
 		return _topic;
 	}
 	
-	public boolean getIsImage() {
+	public boolean isImage() {
 		return _isImage;
 	}
 	

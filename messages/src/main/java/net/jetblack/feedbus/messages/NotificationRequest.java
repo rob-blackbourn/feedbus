@@ -58,7 +58,7 @@ public class NotificationRequest extends Message {
 	 * 
 	 * @return The intention of the request.
 	 */
-	public boolean getIsAdd() {
+	public boolean isAdd() {
 		return _isAdd;
 	}
 

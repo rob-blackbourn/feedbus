@@ -17,6 +17,9 @@ import net.jetblack.feedbus.util.EventListener;
 import net.jetblack.feedbus.util.EventRegister;
 import net.jetblack.feedbus.util.concurrent.ConcurrentEventHandler;
 
+/**
+ * The puublisher manager.
+ */
 public class PublisherManager {
 
 
@@ -26,6 +29,10 @@ public class PublisherManager {
     private final EventHandler<StalePublisherEventArgs> _stalePublisher = new ConcurrentEventHandler<StalePublisherEventArgs>();
     public final EventRegister<StalePublisherEventArgs> StalePublisher = _stalePublisher;
 
+    /**
+     * Construct the manager.
+     * @param interactorManager The interactor manager.
+     */
     public PublisherManager(InteractorManager interactorManager) {
         _repository = new PublisherRepository();
         
@@ -47,6 +54,12 @@ public class PublisherManager {
     }
 
     // TODO: Change the order of the arguments
+    /**
+     * Send data to a single interactor.
+     * @param publisher The publisher.
+     * @param unicastData The data to send.
+     * @param subscriber The recipient.
+     */
     public void sendUnicastData(Interactor publisher, UnicastData unicastData, Interactor subscriber) {
         _repository.addPublisher(publisher, unicastData.getFeed(), unicastData.getTopic());
         try {
@@ -56,6 +69,12 @@ public class PublisherManager {
 		}
     }
 
+    /**
+     * Send data to all subscribers.
+     * @param publisher The publisher.
+     * @param subscribers The subscribers to receive the data.
+     * @param multicastData The data.
+     */
     public void sendMulticastData(Interactor publisher, List<Interactor> subscribers, MulticastData multicastData) {
         for (Interactor subscriber : subscribers) {
 			sendMulticastData(publisher, subscriber, multicastData);

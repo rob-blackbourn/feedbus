@@ -6,6 +6,10 @@ import java.util.List;
 import net.jetblack.feedbus.util.EventHandler;
 import net.jetblack.feedbus.util.EventListener;
 
+/**
+ * A thread safe event handler.
+ * @param <T> The type of the event.
+ */
 public class ConcurrentEventHandler<T> implements EventHandler<T> {
 
     private final List<EventListener<T>> _listeners = new ArrayList<EventListener<T>>();

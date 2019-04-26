@@ -101,7 +101,7 @@ public class UnicastData extends Message {
 	 * 
 	 * @return The state of the data.
 	 */
-	public boolean getIsImage() {
+	public boolean isImage() {
 		return _isImage;
 	}
 	
