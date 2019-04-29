@@ -492,10 +492,11 @@ public class Client implements Closeable {
     }
 
     private void raiseOnDataOrHeartbeat(MulticastData message) {
-        if (message.getFeed() == "__admin__" && message.getTopic() == "heartbeat")
+        if ("__admin__".equals(message.getFeed())  && "heartbeat".contentEquals(message.getTopic())) {
             raiseHeartbeatEvent();
-        else
+        } else {
             raiseOnData(message.getFeed(), message.getTopic(), message.getData(), message.isImage());
+        }
     }
 
     private void raiseHeartbeatEvent() {

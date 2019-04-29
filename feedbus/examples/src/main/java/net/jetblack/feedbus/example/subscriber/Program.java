@@ -5,6 +5,8 @@ import java.util.Map;
 import net.jetblack.feedbus.adapters.Client;
 import net.jetblack.feedbus.adapters.ConnectionChangedEvent;
 import net.jetblack.feedbus.adapters.ConnectionChangedListener;
+import net.jetblack.feedbus.adapters.DataErrorEvent;
+import net.jetblack.feedbus.adapters.DataErrorListener;
 import net.jetblack.feedbus.adapters.DataReceivedEvent;
 import net.jetblack.feedbus.adapters.DataReceivedListener;
 
@@ -29,11 +31,20 @@ public class Program {
 				@Override
 				public void onDataReceived(DataReceivedEvent event) {
 					System.out.println("Data received: " + event.getData());
-					@SuppressWarnings("unchecked")
-					Map<String,Object> data = (Map<String, Object>) event.getData();
-					for (Map.Entry<String, Object> item : data.entrySet()) {
-						System.out.println(item.getKey() + ": " + item.getValue());
-					}
+//					@SuppressWarnings("unchecked")
+//					Map<String,Object> data = (Map<String, Object>) event.getData();
+//					for (Map.Entry<String, Object> item : data.entrySet()) {
+//						System.out.println(item.getKey() + ": " + item.getValue());
+//					}
+				}
+			});
+			
+			client.addDataErrorListener(new DataErrorListener() {
+				
+				@Override
+				public void onDataErrorEvent(DataErrorEvent event) {
+					System.out.println("onDataError: " + event);
+					
 				}
 			});
 
