@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.jetblack.feedbus.adapters.config.ConnectionConfig;
@@ -262,20 +263,22 @@ public class Client implements Closeable {
                 }
             }
             catch (InterruptedException error) {
-            	logger.info("Interrupted read thread");
+            	// The client parent thread has interrupted us.
+            	// No need to complain or report connection state events.
+            	logger.finest("Th read thread has been interrupted.");
                 return;
             }
             catch (EOFException error) {
-            	logger.info("EOF read thread");
-                raiseConnectionStateChanged(ConnectionState.Closed, null);
-                return;
-            }
-            catch (SocketException error) {
-            	logger.info("Socket exception read thread");
+            	// The distributor has closed the connection.
+            	// As the distributor never does this voluntarily there must be a
+            	// bigger problem.
+            	logger.severe("The distrubutor has closed the connection.");
+                raiseConnectionStateChanged(ConnectionState.Closed, error);
                 return;
             }
             catch (Exception error) {
-            	logger.info("Error read thread");
+            	// There may be a network problem.
+            	logger.log(Level.SEVERE, "Failed to read from distributor.", error);
                 raiseConnectionStateChanged(ConnectionState.Faulted, error);
                 return;
             }
@@ -294,7 +297,7 @@ public class Client implements Closeable {
             }
             catch (EOFException error) {
             	logger.info("EOF write thread");
-                raiseConnectionStateChanged(ConnectionState.Closed, null);
+                raiseConnectionStateChanged(ConnectionState.Closed, error);
                 return;
             }
             catch (Exception error) {
