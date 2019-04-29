@@ -9,6 +9,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.logging.Logger;
@@ -21,10 +23,6 @@ import net.jetblack.feedbus.messages.MulticastData;
 import net.jetblack.feedbus.messages.NotificationRequest;
 import net.jetblack.feedbus.messages.SubscriptionRequest;
 import net.jetblack.feedbus.messages.UnicastData;
-import net.jetblack.feedbus.util.EventArgs;
-import net.jetblack.feedbus.util.EventHandler;
-import net.jetblack.feedbus.util.EventRegister;
-import net.jetblack.feedbus.util.concurrent.ConcurrentEventHandler;
 import net.jetblack.feedbus.util.io.ByteSerializable;
 
 /**
@@ -39,11 +37,13 @@ public class Client implements Closeable {
     private final DataOutputStream _outputStream;
     private final ByteSerializable _byteEncoder;
     private final BlockingQueue<Message> _writeQueue;
-    private final EventHandler<DataReceivedEventArgs> _dataReceived = new ConcurrentEventHandler<DataReceivedEventArgs>();
-    private final EventHandler<DataErrorEventArgs> _dataError = new ConcurrentEventHandler<DataErrorEventArgs>();
-    private final EventHandler<ForwardedSubscriptionEventArgs> _forwardedSubscription = new ConcurrentEventHandler<ForwardedSubscriptionEventArgs>();
-    private final EventHandler<ConnectionChangedEventArgs> _connectionChanged = new ConcurrentEventHandler<ConnectionChangedEventArgs>();
-    private final EventHandler<EventArgs> _heartbeat = new ConcurrentEventHandler<EventArgs>();
+    
+    
+    private final List<DataErrorListener> _dataErrorListeners = new ArrayList<DataErrorListener>();
+    private final List<DataReceivedListener> _dataReceivedListeners = new ArrayList<DataReceivedListener>();
+    private final List<ForwardedSubscriptionListener> _forwardedSubscriptionListeners = new ArrayList<ForwardedSubscriptionListener>();
+    private final List<ConnectionChangedListener> _connectionChangedListener = new ArrayList<ConnectionChangedListener>();
+    private final List<HeartbeatListener> _heartbeatListeners = new ArrayList<HeartbeatListener>();
 
     /**
      * A convenience method to create and start a client from system properties.
@@ -111,25 +111,106 @@ public class Client implements Closeable {
     }
 
     /**
-     * Register a listener for data received events.
+     * Adds a listener to data received events.
+     * @param listener The listener to add.
      */
-    public final EventRegister<DataReceivedEventArgs> DataReceived = _dataReceived;
+    public void addDataReceivedListener(DataReceivedListener listener) {
+    	synchronized (_dataReceivedListeners) {
+			_dataReceivedListeners.add(listener);
+		}
+    }
+
     /**
-     * Register a listener for data error events.
+     * Removes a listener to data received events.
+     * @param listener The listener to remove.
      */
-    public final EventRegister<DataErrorEventArgs> DataError = _dataError;
+    public void removeDataReceivedListener(DataReceivedListener listener) {
+    	synchronized (_dataReceivedListeners) {
+			_dataReceivedListeners.remove(listener);
+		}
+    }
+    
+
     /**
-     * Register a listener for notifications.
+     * Adds a listener to data error events.
+     * @param listener The listener to add.
      */
-    public final EventRegister<ForwardedSubscriptionEventArgs> ForwardedSubscription = _forwardedSubscription;
+    public void addDataErrorListener(DataErrorListener listener) {
+    	synchronized (_dataErrorListeners) {
+			_dataErrorListeners.add(listener);
+		}
+    }
+    
     /**
-     * Register a listener for changes in the connection state.
+     * Removes a listener to data error events.
+     * @param listener The listener to remove.
      */
-    public final EventRegister<ConnectionChangedEventArgs> ConnectionChanged = _connectionChanged;
+    public void removeDataErrorListener(DataErrorListener listener) {
+    	synchronized (_dataErrorListeners) {
+			_dataErrorListeners.remove(listener);
+		}
+    }
+
     /**
-     * Register a listener for heart beats.
+     * Adds a listener to forwarded subscription events.
+     * @param listener The listener to add
      */
-    public final EventRegister<EventArgs> Heartbeat = _heartbeat;
+    public void addForwardedSubscriptionListener(ForwardedSubscriptionListener listener) {
+    	synchronized (_forwardedSubscriptionListeners) {
+			_forwardedSubscriptionListeners.add(listener);
+		}
+    }
+    
+    /**
+     * Removes a listener to forwarded subscription events.
+     * @param listener The listener to remove
+     */
+    public void removeForwardedSubscriptionListener(ForwardedSubscriptionListener listener) {
+    	synchronized (_forwardedSubscriptionListeners) {
+			_forwardedSubscriptionListeners.remove(listener);
+		}
+    }
+    
+
+    /**
+     * Adds a listener to connection changed events.
+     * @param listener The listener to add.
+     */
+    public void addConnectionChangedListener(ConnectionChangedListener listener) {
+    	synchronized (_connectionChangedListener) {
+			_connectionChangedListener.add(listener);
+		}
+    }
+    
+    /**
+     * Removes a listener to connection changed events.
+     * @param listener The listener to remove.
+     */
+    public void removeConnectionChangedListener(ConnectionChangedListener listener) {
+    	synchronized (_connectionChangedListener) {
+			_connectionChangedListener.remove(listener);
+		}
+    }
+
+    /**
+     * Adds a listener to heartbeat events.
+     * @param listener The listener to add.
+     */
+    public void addHeartbeatListener(HeartbeatListener listener) {
+    	synchronized (_heartbeatListeners) {
+			_heartbeatListeners.add(listener);
+		}
+    }
+
+    /**
+     * Removes a listener to heartbeat events.
+     * @param listener The listener to remove.
+     */
+    public void removeHeartbeatListener(HeartbeatListener listener) {
+    	synchronized (_heartbeatListeners) {
+			_heartbeatListeners.remove(listener);
+		}
+    }
 
     private Client(Socket socket, ByteSerializable byteSerializer, int writeQueueCapacity) throws IOException {
     	_socket = socket;
@@ -225,7 +306,23 @@ public class Client implements Closeable {
     }
 
     private void raiseConnectionStateChanged(ConnectionState state, Exception error) {
-    	_connectionChanged.notify(new ConnectionChangedEventArgs(state, error));
+    	raiseConnectionChangedEvent(state, error);
+    }
+    
+    private void raiseConnectionChangedEvent(ConnectionState state, Exception error) {
+    	List<ConnectionChangedListener> listeners = new ArrayList<ConnectionChangedListener>();
+    	synchronized (_connectionChangedListener) {
+			if (_connectionChangedListener.isEmpty()) {
+				return;
+			}
+			for (ConnectionChangedListener listener : _connectionChangedListener) {
+				listeners.add(listener);
+			}
+		}
+    	ConnectionChangedEvent event = new ConnectionChangedEvent(state, error);
+    	for (ConnectionChangedListener listener : listeners) {
+    		listener.onConnectionChanged(event);
+    	}
     }
 
     /**
@@ -332,7 +429,7 @@ public class Client implements Closeable {
             _writeQueue.put(new UnicastData(clientId, feed, topic, isImage, serialize(data)));
         }
         catch (Exception error) {
-        	_dataError.notify(new DataErrorEventArgs(true, feed, topic, isImage, data, error));
+        	raiseDataErrorEvent(true, feed, topic, isImage, data, error);
         }
     }
 
@@ -354,23 +451,66 @@ public class Client implements Closeable {
             _writeQueue.put(new MulticastData(feed, topic, isImage, serialize(data)));
         }
         catch (Exception error) {
-        	_dataError.notify(new DataErrorEventArgs(true, feed, topic, isImage, data, error));
+        	raiseDataErrorEvent(true, feed, topic, isImage, data, error);
         }
+    }
+    
+    private void raiseDataErrorEvent(boolean isSending, String feed, String topic, boolean isImage, Object data, Exception error) {
+    	List<DataErrorListener> listeners = new ArrayList<DataErrorListener>();
+    	synchronized (_dataErrorListeners) {
+        	if (_dataErrorListeners.isEmpty()) {
+        		return;
+        	}
+			for (DataErrorListener listener : _dataErrorListeners) {
+				listeners.add(listener);
+			}
+		}
+    	DataErrorEvent event = new DataErrorEvent(true, feed, topic, isImage, data, error);
+    	for (DataErrorListener listener : listeners) {
+    		listener.onDataErrorEvent(event);
+    	}
     }
 
     private void raiseOnForwardedSubscriptionRequest(ForwardedSubscriptionRequest message) {
-    	_forwardedSubscription.notify(new ForwardedSubscriptionEventArgs(message.getClientId(), message.getFeed(), message.getTopic(), message.isAdd()));
+    	raiseForwardedSubscriptionEvent(message.getClientId(), message.getFeed(), message.getTopic(), message.isAdd());
+    }
+    
+    private void raiseForwardedSubscriptionEvent(String clientId, String feed, String topic, boolean isAdd) {
+    	List<ForwardedSubscriptionListener> listeners = new ArrayList<ForwardedSubscriptionListener>();
+    	synchronized (_forwardedSubscriptionListeners) {
+			if (_forwardedSubscriptionListeners.isEmpty()) {
+				return;
+			}
+			for (ForwardedSubscriptionListener listener : _forwardedSubscriptionListeners) {
+				listeners.add(listener);
+			}
+		}
+    	ForwardedSubscriptionEvent event = new ForwardedSubscriptionEvent(clientId, feed, topic, isAdd);
+    	for (ForwardedSubscriptionListener listener : listeners) {
+    		listener.onForwardedSubscription(event);
+    	}
     }
 
     private void raiseOnDataOrHeartbeat(MulticastData message) {
         if (message.getFeed() == "__admin__" && message.getTopic() == "heartbeat")
-            raiseOnHeartbeat();
+            raiseHeartbeatEvent();
         else
             raiseOnData(message.getFeed(), message.getTopic(), message.getData(), message.isImage());
     }
 
-    private void raiseOnHeartbeat() {
-    	_heartbeat.notify(EventArgs.Empty);
+    private void raiseHeartbeatEvent() {
+    	List<HeartbeatListener> listeners = new ArrayList<HeartbeatListener>();
+    	synchronized (_heartbeatListeners) {
+			if (_heartbeatListeners.isEmpty()) {
+				return;
+			}
+			for (HeartbeatListener listener : _heartbeatListeners) {
+				listeners.add(listener);
+			}
+		}
+    	for (HeartbeatListener listener : listeners) {
+    		listener.onHeartbeat();
+    	}
     }
 
     private void raiseOnData(UnicastData message) {
@@ -387,11 +527,27 @@ public class Client implements Closeable {
 
     private void raiseOnData(String feed, String topic, byte[] data, boolean isImage) {
         try {
-        	_dataReceived.notify(new DataReceivedEventArgs(feed, topic, deserialize(data), isImage));
+        	raiseDataReceivedEvent(feed, topic, deserialize(data), isImage);
         }
         catch (Exception error) {
-        	_dataError.notify(new DataErrorEventArgs(false, feed, topic, isImage, data, error));
+        	raiseDataErrorEvent(false, feed, topic, isImage, data, error);
         }
+    }
+    
+    private void raiseDataReceivedEvent(String feed, String topic, Object data, boolean isImage) {
+    	List<DataReceivedListener> listeners = new ArrayList<DataReceivedListener>();
+    	synchronized (_dataReceivedListeners) {
+    		if (_dataErrorListeners.isEmpty()) {
+    			return;
+    		}
+			for (DataReceivedListener listener : _dataReceivedListeners) {
+				listeners.add(listener);
+			}
+		}
+    	DataReceivedEvent event = new DataReceivedEvent(feed, topic, data, isImage);
+    	for (DataReceivedListener listener : listeners) {
+    		listener.onDataReceived(event);
+    	}
     }
 
 	@Override

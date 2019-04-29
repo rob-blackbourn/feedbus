@@ -3,7 +3,7 @@ package net.jetblack.feedbus.adapters;
 /**
  * A class representing an error in the serialization of data.
  */
-public class DataErrorEventArgs {
+public class DataErrorEvent {
 
     private final boolean _isSending;
     private final String _feed;
@@ -22,7 +22,7 @@ public class DataErrorEventArgs {
      * @param data The data being sent or received.
      * @param error The exception that was thrown.
      */
-    public DataErrorEventArgs(boolean isSending, String feed, String topic, boolean isImage, Object data, Exception error) {
+    public DataErrorEvent(boolean isSending, String feed, String topic, boolean isImage, Object data, Exception error) {
         _isSending = isSending;
         _feed = feed;
         _topic = topic;

@@ -1,8 +1,8 @@
 package net.jetblack.feedbus.example.notifier;
 
 import net.jetblack.feedbus.adapters.Client;
-import net.jetblack.feedbus.adapters.ForwardedSubscriptionEventArgs;
-import net.jetblack.feedbus.util.EventListener;
+import net.jetblack.feedbus.adapters.ForwardedSubscriptionEvent;
+import net.jetblack.feedbus.adapters.ForwardedSubscriptionListener;
 
 public class Notifier {
 
@@ -17,14 +17,12 @@ public class Notifier {
 			}
 			
 			Client client = Client.create(programArgs.getConfig());
-			
-			client.ForwardedSubscription.add(new EventListener<ForwardedSubscriptionEventArgs>() {
-
+			client.addForwardedSubscriptionListener(new ForwardedSubscriptionListener() {
+				
 				@Override
-				public void onEvent(ForwardedSubscriptionEventArgs event) {
+				public void onForwardedSubscription(ForwardedSubscriptionEvent event) {
 					System.out.println("Subscription received on feed \"" + event.getFeed() + "\" for topic \"" + event.getTopic() + "\" add "+ event.isAdd());
 				}
-				
 			});
 
 			String feed = remainingArgs[0];

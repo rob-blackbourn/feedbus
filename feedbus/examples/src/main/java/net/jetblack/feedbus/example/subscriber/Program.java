@@ -3,9 +3,10 @@ package net.jetblack.feedbus.example.subscriber;
 import java.util.Map;
 
 import net.jetblack.feedbus.adapters.Client;
-import net.jetblack.feedbus.adapters.ConnectionChangedEventArgs;
-import net.jetblack.feedbus.adapters.DataReceivedEventArgs;
-import net.jetblack.feedbus.util.EventListener;
+import net.jetblack.feedbus.adapters.ConnectionChangedEvent;
+import net.jetblack.feedbus.adapters.ConnectionChangedListener;
+import net.jetblack.feedbus.adapters.DataReceivedEvent;
+import net.jetblack.feedbus.adapters.DataReceivedListener;
 
 public class Program {
 
@@ -23,11 +24,10 @@ public class Program {
 
 			Client client = Client.create(programArgs.getConfig());
 			
-			
-			client.DataReceived.add(new EventListener<DataReceivedEventArgs>() {
+			client.addDataReceivedListener(new DataReceivedListener() {
 				
 				@Override
-				public void onEvent(DataReceivedEventArgs event) {
+				public void onDataReceived(DataReceivedEvent event) {
 					System.out.println("Data received: " + event.getData());
 					@SuppressWarnings("unchecked")
 					Map<String,Object> data = (Map<String, Object>) event.getData();
@@ -36,11 +36,11 @@ public class Program {
 					}
 				}
 			});
-			
-			client.ConnectionChanged.add(new EventListener<ConnectionChangedEventArgs>() {
+
+			client.addConnectionChangedListener(new ConnectionChangedListener() {
 				
 				@Override
-				public void onEvent(ConnectionChangedEventArgs event) {
+				public void onConnectionChanged(ConnectionChangedEvent event) {
 					System.out.println("Connection changed: " + event);
 				}
 			});

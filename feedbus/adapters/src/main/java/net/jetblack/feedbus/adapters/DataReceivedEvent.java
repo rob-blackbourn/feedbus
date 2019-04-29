@@ -1,11 +1,9 @@
 package net.jetblack.feedbus.adapters;
 
-import net.jetblack.feedbus.util.EventArgs;
-
 /**
  * Represents data received.
  */
-public class DataReceivedEventArgs extends EventArgs {
+public class DataReceivedEvent {
 
     private final String _feed;
     private final String _topic;
@@ -19,7 +17,7 @@ public class DataReceivedEventArgs extends EventArgs {
      * @param data The data.
      * @param isImage If tru the data represents an image, otherwise false.
      */
-    public DataReceivedEventArgs(String feed, String topic, Object data, boolean isImage) {
+    public DataReceivedEvent(String feed, String topic, Object data, boolean isImage) {
         _feed = feed;
         _topic = topic;
         _isImage = isImage;

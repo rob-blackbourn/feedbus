@@ -3,7 +3,7 @@ package net.jetblack.feedbus.adapters;
 /**
  * Represents a forwarded subscription event.
  */
-public class ForwardedSubscriptionEventArgs {
+public class ForwardedSubscriptionEvent {
 
     private final String _clientId;
     private final String _feed;
@@ -15,9 +15,9 @@ public class ForwardedSubscriptionEventArgs {
      * @param clientId The client id.
      * @param feed The feed name.
      * @param topic The topic name.
-     * @param isAdd If true the subscription is added, otherise it has been removed.
+     * @param isAdd If true the subscription is added, otherwise it has been removed.
      */
-    public ForwardedSubscriptionEventArgs(String clientId, String feed, String topic, boolean isAdd) {
+    public ForwardedSubscriptionEvent(String clientId, String feed, String topic, boolean isAdd) {
         _clientId = clientId;
         _feed = feed;
         _topic = topic;

@@ -3,8 +3,8 @@ package net.jetblack.feedbus.example.selectfeed;
 import java.util.Map;
 
 import net.jetblack.feedbus.adapters.Client;
-import net.jetblack.feedbus.adapters.ForwardedSubscriptionEventArgs;
-import net.jetblack.feedbus.util.EventListener;
+import net.jetblack.feedbus.adapters.ForwardedSubscriptionEvent;
+import net.jetblack.feedbus.adapters.ForwardedSubscriptionListener;
 
 public class CachingPublisher {
 
@@ -16,10 +16,10 @@ public class CachingPublisher {
 		_client = client;
 		_cache = new Cache(client);
 
-		_client.ForwardedSubscription.add(new EventListener<ForwardedSubscriptionEventArgs>() {
-
+		_client.addForwardedSubscriptionListener(new ForwardedSubscriptionListener() {
+			
 			@Override
-			public void onEvent(ForwardedSubscriptionEventArgs event) {
+			public void onForwardedSubscription(ForwardedSubscriptionEvent event) {
 				synchronized (_gate) {
 					if (event.isAdd()) {
 						_cache.addSubscription(event.getClientId(), event.getFeed(), event.getTopic());
@@ -28,7 +28,6 @@ public class CachingPublisher {
 						_cache.removeSubscription(event.getClientId(), event.getFeed(), event.getTopic());
 					}
 				}
-
 			}
 		});
 	}
