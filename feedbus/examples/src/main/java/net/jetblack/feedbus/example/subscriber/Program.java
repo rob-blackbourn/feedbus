@@ -20,7 +20,20 @@ public class Program implements DataReceivedListener, DataErrorListener, Connect
 		
 		try {
 			ProgramArgs programArgs = ProgramArgs.parse(args);
-			Program program = new Program(programArgs.getConfig(), programArgs.getRemaining());
+
+			if (args.length != 2) {
+				System.out.println("Usage: subscriber [options] feed topic");
+				System.exit(1);
+			}
+			
+			Program program = new Program(programArgs.getConfig());
+
+			String feed = args[0];
+			String topic = args[1];
+			
+			System.out.println("Subscribing to feed \"" + feed + "\" topic \"" + topic + "\"");
+			program.addSubscription(feed, topic);
+			
 			System.out.println("Press ^C to quit");
 			Thread.currentThread().join();
 		} catch (Exception e) {
@@ -31,22 +44,15 @@ public class Program implements DataReceivedListener, DataErrorListener, Connect
 	
 	private final Client _client;
 	
-	public Program(ConnectionConfig connectionConfig, String[] args) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException, IOException, InterruptedException {
-		if (args.length != 2) {
-			System.out.println("Usage: subscriber [options] feed topic");
-			System.exit(1);
-		}
-
+	public Program(ConnectionConfig connectionConfig) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException, IOException, InterruptedException {
 		_client = Client.create(connectionConfig);
 		_client.addDataReceivedListener(this);
 		_client.addConnectionChangedListener(this);
 		_client.addDataErrorListener(this);
 		_client.addHeartbeatListener(this);
-		
-		String feed = args[0];
-		String topic = args[1];
-		
-		System.out.println("Subscribing to feed \"" + feed + "\" topic \"" + topic + "\"");
+	}
+	
+	public void addSubscription(String feed, String topic) throws InterruptedException {
 		_client.addSubscription(feed, topic);
 	}
 
