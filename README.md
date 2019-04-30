@@ -1,8 +1,8 @@
 # feedbus
 
-This is work in progress.
+Work in progress.
 
-A broker based message bus written in Java with cclients in multiple languages.
+This is a broker based message bus written in Java with clients in multiple languages.
 
 It supports broadcast and select feed architectures.
 
@@ -25,10 +25,10 @@ The following messages are supported:
 
 #### Subscribe
 
-A client may request or recind a subscription. When a client has subscribed
+A client may add or remove a subscription. When a client has subscribed
 it will receive updates whenever the target of it's subscription changes.
 
-When a client subscribes to data it sends a message to the server with the following content.
+When a client subscribes to data it sends a message to the distributor with the following content.
 
 - Feed
 - Topic
@@ -72,7 +72,8 @@ The *feed* has the same meaning given above.
 
 The *IsAdd* is a boolean indicating whether the notification is being added or removed.
 
-The response to a notification has the following content.
+When another client adds or removes a subscription to a topic on this feed the
+subscription is forwarded to this client with the following content.
 
 - ClientId
 - Feed
@@ -101,14 +102,14 @@ The fields have the same meanins as described above.
 
 A message bus is typically described as *broadcast* or *select feed*. Both types are supported.
 
-# Broadcast feed
+#### Broadcast feed
 
 In a broadcast feed a data provided publishes all data, regardless of whether any clients are listening.
 An example of this is a feed from an exchange.
 
 This is a simple architecture. The data providers send *publish* messages and the clients request *subscriptions*.
 
-# Select feed
+#### Select feed
 
 A select feed only publishes data when clients have subscribed.
 
@@ -117,13 +118,12 @@ provider is more structured.
 
 It first requests notifications for it's feed with a *notify* request.
 
-When it is notified of a subscription it first sends a complete set of data using the *clientId* if received
+When it is notified of a subscription it first sends a complete set of data using the *clientId* it received
 with the forwarded subscription.
 
 Subsequently any data received on the topic is published.
 
 When notified of a subscription removal the data provider checks if any subscriptions remain, and
 stops publishing if no one is listening.
-
 
 
