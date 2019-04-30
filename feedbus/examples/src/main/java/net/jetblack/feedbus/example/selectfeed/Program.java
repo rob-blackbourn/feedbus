@@ -9,7 +9,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import net.jetblack.feedbus.adapters.Client;
-import net.jetblack.feedbus.util.Maps;
 
 public class Program {
 

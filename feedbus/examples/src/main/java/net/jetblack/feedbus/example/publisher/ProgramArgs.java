@@ -4,7 +4,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import net.jetblack.feedbus.adapters.config.ConnectionConfig;
-import net.jetblack.feedbus.util.io.ByteSerializable;
+import net.jetblack.feedbus.adapters.ByteSerializable;
 
 public class ProgramArgs {
 

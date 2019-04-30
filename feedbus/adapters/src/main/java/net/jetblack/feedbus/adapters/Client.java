@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -24,7 +23,6 @@ import net.jetblack.feedbus.messages.MulticastData;
 import net.jetblack.feedbus.messages.NotificationRequest;
 import net.jetblack.feedbus.messages.SubscriptionRequest;
 import net.jetblack.feedbus.messages.UnicastData;
-import net.jetblack.feedbus.util.io.ByteSerializable;
 
 /**
  * A client for the feed bus.

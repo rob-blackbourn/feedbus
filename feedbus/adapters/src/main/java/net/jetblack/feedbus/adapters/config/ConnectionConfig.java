@@ -3,9 +3,9 @@ package net.jetblack.feedbus.adapters.config;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import net.jetblack.feedbus.adapters.ByteSerializable;
+import net.jetblack.feedbus.adapters.StringSerializer;
 import net.jetblack.feedbus.adapters.Client;
-import net.jetblack.feedbus.util.io.ByteSerializable;
-import net.jetblack.feedbus.util.io.StringSerializer;
 
 /**
  * Configuration for the client.
@@ -81,7 +81,7 @@ public class ConnectionConfig {
 	 * @param address The server address.
 	 * @param port The server port.
 	 * @param byteSerializerType The byte serializer type.
-	 * @param writeQueueCapacity The write queue capcity.
+	 * @param writeQueueCapacity The write queue capacity.
 	 * @param heartbeatInterval The server heart beat interval.
 	 */
 	public ConnectionConfig(InetAddress address, int port, Class<? extends ByteSerializable> byteSerializerType, int writeQueueCapacity, long heartbeatInterval) {

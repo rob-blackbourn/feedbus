@@ -6,7 +6,7 @@ import java.util.Map;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import net.jetblack.feedbus.util.io.ByteSerializable;
+import net.jetblack.feedbus.adapters.ByteSerializable;
 
 public class JsonSerializer implements ByteSerializable {
 

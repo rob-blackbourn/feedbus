@@ -3,8 +3,8 @@ package net.jetblack.feedbus.example.notifier;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import net.jetblack.feedbus.adapters.ByteSerializable;
 import net.jetblack.feedbus.adapters.config.ConnectionConfig;
-import net.jetblack.feedbus.util.io.ByteSerializable;
 
 public class ProgramArgs {
 
