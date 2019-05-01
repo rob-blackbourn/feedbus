@@ -121,4 +121,8 @@
       <organizationUrl>http://www.jetblack.net</organizationUrl>
     </developer>
   </developers>
+  <issueManagement>
+  	<system>GitHub</system>
+  	<url>https://github.com/rob-blackbourn/feedbus/issues</url>
+  </issueManagement>
 </project>
