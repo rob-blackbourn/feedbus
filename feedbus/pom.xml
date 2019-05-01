@@ -95,4 +95,30 @@
       </plugin>
     </plugins>
   </build>
+  <name>feedbus</name>
+  <url>https://github.com/rob-blackbourn/feedbus</url>
+  <description>A broker based message bus</description>
+  <licenses>
+    <license>
+      <name>The Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+  <organization>
+  	<name>JetBlack.net</name>
+  	<url>https://www.jetblack.net</url>
+  </organization>
+  <scm>
+  	<connection>scm:git:git@github.com:rob-blackbourn/feedbus.git</connection>
+  	<developerConnection>scm:git:ssh@github.com:rob-blackbourn/feedbus.git</developerConnection>
+  	<url>https://github.com/rob-blackbourn/feedbus/tree/master</url>
+  </scm>
+  <developers>
+    <developer>
+      <name>Rob Blackbourn</name>
+      <email>rob.blackbourn@googlemail.com</email>
+      <organization>JetBlack.net</organization>
+      <organizationUrl>http://www.jetblack.net</organizationUrl>
+    </developer>
+  </developers>
 </project>
