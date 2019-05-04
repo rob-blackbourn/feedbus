@@ -3,14 +3,14 @@
   <parent>
     <groupId>net.jetblack.feedbus</groupId>
     <artifactId>feedbus</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
   </parent>
   <artifactId>examples</artifactId>
   <dependencies>
   	<dependency>
   		<groupId>net.jetblack.feedbus</groupId>
   		<artifactId>adapters</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
+  		<version>0.0.1</version>
   	</dependency>
   	<dependency>
   		<groupId>com.google.code.gson</groupId>

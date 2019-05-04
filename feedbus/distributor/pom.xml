@@ -3,19 +3,19 @@
   <parent>
     <groupId>net.jetblack.feedbus</groupId>
     <artifactId>feedbus</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
   </parent>
   <artifactId>distributor</artifactId>
   <dependencies>
   	<dependency>
   		<groupId>net.jetblack.feedbus</groupId>
   		<artifactId>util</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
+  		<version>0.0.1</version>
   	</dependency>
   	<dependency>
   		<groupId>net.jetblack.feedbus</groupId>
   		<artifactId>messages</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
+  		<version>0.0.1</version>
   	</dependency>
   </dependencies>
   <build>
