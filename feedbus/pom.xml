@@ -23,7 +23,7 @@
 
   <scm>
   	<connection>scm:git:git@github.com:rob-blackbourn/feedbus.git</connection>
-  	<developerConnection>scm:git:ssh@github.com:rob-blackbourn/feedbus.git</developerConnection>
+  	<developerConnection>scm:git:git@github.com:rob-blackbourn/feedbus.git</developerConnection>
   	<url>https://github.com/rob-blackbourn/feedbus/tree/master</url>
   </scm>
 
@@ -41,6 +41,14 @@
   	<url>https://github.com/rob-blackbourn/feedbus/issues</url>
   </issueManagement>
 
+  <properties>
+  	<encodung>UTF-8</encodung>
+  	<project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
+  	<project.resources.sourceEncoding>${encoding}</project.resources.sourceEncoding>
+  	<project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
+  	<archetype.encoding>${encoding}</archetype.encoding>
+  </properties>
+  
   <modules>
   	<module>util</module>
   	<module>messages</module>
