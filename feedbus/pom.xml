@@ -1,9 +1,46 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.jetblack.feedbus</groupId>
   <artifactId>feedbus</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
+  <name>feedbus</name>
+  <url>https://github.com/rob-blackbourn/feedbus</url>
+  <description>A broker based message bus</description>
+
+  <licenses>
+    <license>
+      <name>The Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <organization>
+  	<name>JetBlack.net</name>
+  	<url>https://www.jetblack.net</url>
+  </organization>
+
+  <scm>
+  	<connection>scm:git:git@github.com:rob-blackbourn/feedbus.git</connection>
+  	<developerConnection>scm:git:ssh@github.com:rob-blackbourn/feedbus.git</developerConnection>
+  	<url>https://github.com/rob-blackbourn/feedbus/tree/master</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <name>Rob Blackbourn</name>
+      <email>rob.blackbourn@googlemail.com</email>
+      <organization>JetBlack.net</organization>
+      <organizationUrl>http://www.jetblack.net</organizationUrl>
+    </developer>
+  </developers>
+
+  <issueManagement>
+  	<system>GitHub</system>
+  	<url>https://github.com/rob-blackbourn/feedbus/issues</url>
+  </issueManagement>
+
   <modules>
   	<module>util</module>
   	<module>messages</module>
@@ -11,6 +48,7 @@
   	<module>distributor</module>
   	<module>examples</module>
   </modules>
+
   <distributionManagement>
     <snapshotRepository>
       <id>ossrh</id>
@@ -21,6 +59,7 @@
       <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
     </repository>
   </distributionManagement>
+
   <build>
     <plugins>
       <plugin>
@@ -82,48 +121,18 @@
           <autoReleaseAfterClose>true</autoReleaseAfterClose>
         </configuration>
       </plugin>
-    <plugin>
-  <groupId>org.apache.maven.plugins</groupId>
-  <artifactId>maven-release-plugin</artifactId>
-  <version>2.5.3</version>
-  <configuration>
-    <autoVersionSubmodules>true</autoVersionSubmodules>
-    <useReleaseProfile>false</useReleaseProfile>
-    <releaseProfiles>release</releaseProfiles>
-    <goals>deploy</goals>
-  </configuration>
-</plugin>
-      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.5.3</version>
+        <configuration>
+          <autoVersionSubmodules>true</autoVersionSubmodules>
+          <useReleaseProfile>false</useReleaseProfile>
+          <releaseProfiles>release</releaseProfiles>
+          <goals>deploy</goals>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
-  <name>feedbus</name>
-  <url>https://github.com/rob-blackbourn/feedbus</url>
-  <description>A broker based message bus</description>
-  <licenses>
-    <license>
-      <name>The Apache License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-    </license>
-  </licenses>
-  <organization>
-  	<name>JetBlack.net</name>
-  	<url>https://www.jetblack.net</url>
-  </organization>
-  <scm>
-  	<connection>scm:git:git@github.com:rob-blackbourn/feedbus.git</connection>
-  	<developerConnection>scm:git:ssh@github.com:rob-blackbourn/feedbus.git</developerConnection>
-  	<url>https://github.com/rob-blackbourn/feedbus/tree/master</url>
-  </scm>
-  <developers>
-    <developer>
-      <name>Rob Blackbourn</name>
-      <email>rob.blackbourn@googlemail.com</email>
-      <organization>JetBlack.net</organization>
-      <organizationUrl>http://www.jetblack.net</organizationUrl>
-    </developer>
-  </developers>
-  <issueManagement>
-  	<system>GitHub</system>
-  	<url>https://github.com/rob-blackbourn/feedbus/issues</url>
-  </issueManagement>
+
 </project>
