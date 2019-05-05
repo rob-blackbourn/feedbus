@@ -11,7 +11,7 @@ import net.jetblack.feedbus.distributor.Program;
 public class DistributorConfig {
 	
 	public static final String DEFAULT_HOST = "0.0.0.0";
-	public static final int DEFAULT_PORT = 30011;
+	public static final int DEFAULT_PORT = 9775;
 	public static final int DEFAULT_EVENT_QUEUE_CAPACITY = 8096;
 	public static final int DEFAULT_WRITE_QUEUE_CAPACITY = 8096;
 	public static final long DEFAULT_HEARTBEAT_INTERVAL = 1000;

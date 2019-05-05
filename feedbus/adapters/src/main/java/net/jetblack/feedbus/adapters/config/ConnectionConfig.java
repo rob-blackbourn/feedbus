@@ -19,7 +19,7 @@ public class ConnectionConfig {
 	/**
 	 * The default server port.
 	 */
-	public static final int DEFAULT_PORT = 30011;
+	public static final int DEFAULT_PORT = 9775;
 	/**
 	 * The default serializer.
 	 */
