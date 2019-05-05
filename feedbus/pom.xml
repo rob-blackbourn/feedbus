@@ -44,10 +44,10 @@
 
   <properties>
   	<encodung>UTF-8</encodung>
-  	<project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
-  	<project.resources.sourceEncoding>${encoding}</project.resources.sourceEncoding>
-  	<project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
-  	<archetype.encoding>${encoding}</archetype.encoding>
+  	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  	<project.resources.sourceEncoding>UTF-8</project.resources.sourceEncoding>
+  	<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  	<archetype.encoding>UTF-8</archetype.encoding>
   </properties>
   
   <modules>
