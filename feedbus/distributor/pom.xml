@@ -36,7 +36,7 @@
             <configuration>
               <archive>
                 <manifest>
-                  <mainClass>net.jetblack.feedbus.distributor.Program</mainClass>
+                  <mainClass>net.jetblack.feedbus.distributor.Distributor</mainClass>
                 </manifest>
               </archive>
               <descriptorRefs>

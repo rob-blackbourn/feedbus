@@ -6,7 +6,7 @@ import java.util.logging.LogManager;
 /**
  * The entry point for starting a distributor.
  */
-public class Program {
+public class Distributor {
 
 	/**
 	 * Starts a distributor.

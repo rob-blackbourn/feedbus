@@ -3,7 +3,7 @@ package net.jetblack.feedbus.distributor.config;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import net.jetblack.feedbus.distributor.Program;
+import net.jetblack.feedbus.distributor.Distributor;
 
 /**
  * Configuration for the distributor.
@@ -157,7 +157,7 @@ public class DistributorConfig {
      * @throws UnknownHostException
      */
     public static DistributorConfig createFromProperties() throws UnknownHostException {
-		String packageName = Program.class.getPackage().getName();
+		String packageName = Distributor.class.getPackage().getName();
 		
 		InetAddress address = InetAddress.getByName(System.getProperty(packageName + ".HOST", DEFAULT_HOST));
 		
