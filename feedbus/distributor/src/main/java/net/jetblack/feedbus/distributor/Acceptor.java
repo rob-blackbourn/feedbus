@@ -7,10 +7,16 @@ import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.management.InstanceAlreadyExistsException;
+import javax.management.MBeanRegistrationException;
+import javax.management.MalformedObjectNameException;
+import javax.management.NotCompliantMBeanException;
+
 import net.jetblack.feedbus.distributor.interactors.Interactor;
 import net.jetblack.feedbus.distributor.interactors.InteractorConnectedEventArgs;
 import net.jetblack.feedbus.distributor.interactors.InteractorEventArgs;
 import net.jetblack.feedbus.distributor.interactors.InteractorListener;
+import net.jetblack.feedbus.distributor.monitor.AcceptorMonitor;
 import net.jetblack.feedbus.util.concurrent.EventQueue;
 
 /**
@@ -20,6 +26,8 @@ public class Acceptor implements Runnable, Closeable {
 
 	private static final Logger logger = Logger.getLogger(Acceptor.class.getName());
 
+	private final AcceptorMonitor _acceptorMonitor = new AcceptorMonitor();
+	
 	private final EventQueue<InteractorEventArgs> _eventQueue;
 	private final int _writeQueueCapacity;
 	private final InetAddress _address;
@@ -50,8 +58,14 @@ public class Acceptor implements Runnable, Closeable {
 	 * Start accepting connections.
 	 * 
 	 * @return The listener thread.
+	 * @throws NotCompliantMBeanException 
+	 * @throws MBeanRegistrationException 
+	 * @throws InstanceAlreadyExistsException 
+	 * @throws MalformedObjectNameException 
 	 */
-	public Thread start() {
+	public Thread start() throws MalformedObjectNameException, InstanceAlreadyExistsException, MBeanRegistrationException, NotCompliantMBeanException {
+		_acceptorMonitor.register();
+		
 		Thread thread = new Thread(this);
 		thread.start();
 		return thread;
@@ -70,6 +84,7 @@ public class Acceptor implements Runnable, Closeable {
 			try {
 				Interactor interactor = _listener.accept();
 				_eventQueue.enqueue(new InteractorConnectedEventArgs(interactor));
+				_acceptorMonitor.incrAcceptedConnectionCount();
 			} catch (InterruptedException error) {
 				logger.info("Thread interrupted - exiting");
 				break;
@@ -91,6 +106,8 @@ public class Acceptor implements Runnable, Closeable {
 
 	@Override
 	public void close() throws IOException {
+		_acceptorMonitor.unregister();
+		
 		if (_listener != null) {
 			_listener.close();
 		}

@@ -8,12 +8,18 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Logger;
 
+import javax.management.InstanceAlreadyExistsException;
+import javax.management.MBeanRegistrationException;
+import javax.management.MalformedObjectNameException;
+import javax.management.NotCompliantMBeanException;
+
 import net.jetblack.feedbus.distributor.interactors.InteractorConnectedEventArgs;
 import net.jetblack.feedbus.distributor.interactors.InteractorErrorEventArgs;
 import net.jetblack.feedbus.distributor.interactors.InteractorEventArgs;
 import net.jetblack.feedbus.distributor.interactors.InteractorManager;
 import net.jetblack.feedbus.distributor.interactors.InteractorMessageEventArgs;
 import net.jetblack.feedbus.distributor.interactors.InteractorShutdownEventArgs;
+import net.jetblack.feedbus.distributor.monitor.ServerMonitor;
 import net.jetblack.feedbus.distributor.notifiers.NotificationManager;
 import net.jetblack.feedbus.distributor.subscriptions.SubscriptionManager;
 import net.jetblack.feedbus.messages.MonitorRequest;
@@ -37,6 +43,7 @@ public class Server implements Closeable {
     private final InteractorManager _interactorManager;
     private final SubscriptionManager _subscriptionManager;
     private final NotificationManager _notificationManager;
+    private final ServerMonitor _serverMonitor = new ServerMonitor();
     
     private Timer _heartbeatTimer;
     private Thread _eventQueueThread;
@@ -49,11 +56,20 @@ public class Server implements Closeable {
      * @param port The port to bind to.
      * @param eventQueueCapacity The capacity of the event queue.
      * @param writeQueueCapacity The capacity of the write queue on an interactor.
+     * @throws NotCompliantMBeanException 
+     * @throws MBeanRegistrationException 
+     * @throws InstanceAlreadyExistsException 
+     * @throws MalformedObjectNameException 
      */
-    public Server(InetAddress address, int port, int eventQueueCapacity, int writeQueueCapacity) {
+    public Server(
+    		InetAddress address, 
+    		int port, 
+    		int eventQueueCapacity, 
+    		int writeQueueCapacity) throws MalformedObjectNameException, InstanceAlreadyExistsException, MBeanRegistrationException, NotCompliantMBeanException {
         _eventQueue = new EventQueue<InteractorEventArgs>(eventQueueCapacity, new InteractorShutdownEventArgs());
         
-        _eventQueue.Listener.add(new EventListener<InteractorEventArgs>() {
+
+    	_eventQueue.Listener.add(new EventListener<InteractorEventArgs>() {
 			@Override
 			public void onEvent(InteractorEventArgs event) {
 				onInteractorEvent(event);
@@ -74,9 +90,15 @@ public class Server implements Closeable {
      * Start the server.
      * 
      * @param heartbeatInterval The time in milliseconds to wait between each heart beat or 0 for no heart beat.
+     * @throws NotCompliantMBeanException 
+     * @throws MBeanRegistrationException 
+     * @throws InstanceAlreadyExistsException 
+     * @throws MalformedObjectNameException 
      */
-    public void start(long heartbeatInterval) {
+    public void start(long heartbeatInterval) throws MalformedObjectNameException, InstanceAlreadyExistsException, MBeanRegistrationException, NotCompliantMBeanException {
         logger.info("Starting server");
+
+    	_serverMonitor.register();
 
         _eventQueueThread = _eventQueue.start();
         _acceptThread = _acceptor.start();
@@ -129,6 +151,8 @@ public class Server implements Closeable {
     private void onMessage(InteractorMessageEventArgs event) {
         logger.fine(String.format("OnMessage(sender=%s, message=%s", event.getInteractor(), event.getMessage()));
 
+        _serverMonitor.incrMessageCount();
+        
         switch (event.getMessage().getType()) {
             case MonitorRequest:
                 _subscriptionManager.requestMonitor(event.getInteractor(), (MonitorRequest)event.getMessage());
