@@ -19,7 +19,6 @@ import net.jetblack.feedbus.distributor.interactors.InteractorEventArgs;
 import net.jetblack.feedbus.distributor.interactors.InteractorManager;
 import net.jetblack.feedbus.distributor.interactors.InteractorMessageEventArgs;
 import net.jetblack.feedbus.distributor.interactors.InteractorShutdownEventArgs;
-import net.jetblack.feedbus.distributor.monitor.ServerMonitor;
 import net.jetblack.feedbus.distributor.notifiers.NotificationManager;
 import net.jetblack.feedbus.distributor.subscriptions.SubscriptionManager;
 import net.jetblack.feedbus.messages.MonitorRequest;
@@ -43,7 +42,6 @@ public class Server implements Closeable {
     private final InteractorManager _interactorManager;
     private final SubscriptionManager _subscriptionManager;
     private final NotificationManager _notificationManager;
-    private final ServerMonitor _serverMonitor = new ServerMonitor();
     
     private Timer _heartbeatTimer;
     private Thread _eventQueueThread;
@@ -98,8 +96,6 @@ public class Server implements Closeable {
     public void start(long heartbeatInterval) throws MalformedObjectNameException, InstanceAlreadyExistsException, MBeanRegistrationException, NotCompliantMBeanException {
         logger.info("Starting server");
 
-    	_serverMonitor.register();
-
         _eventQueueThread = _eventQueue.start();
         _acceptThread = _acceptor.start();
 
@@ -151,8 +147,6 @@ public class Server implements Closeable {
     private void onMessage(InteractorMessageEventArgs event) {
         logger.fine(String.format("OnMessage(sender=%s, message=%s", event.getInteractor(), event.getMessage()));
 
-        _serverMonitor.incrMessageCount();
-        
         switch (event.getMessage().getType()) {
             case MonitorRequest:
                 _subscriptionManager.requestMonitor(event.getInteractor(), (MonitorRequest)event.getMessage());

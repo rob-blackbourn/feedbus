@@ -17,7 +17,6 @@ import net.jetblack.feedbus.distributor.notifiers.NotificationEventArgs;
 import net.jetblack.feedbus.distributor.notifiers.NotificationManager;
 import net.jetblack.feedbus.distributor.publishers.PublisherManager;
 import net.jetblack.feedbus.distributor.publishers.StalePublisherEventArgs;
-import net.jetblack.feedbus.distributor.subscriptions.monitor.SubscriptionMonitor;
 import net.jetblack.feedbus.messages.FeedTopic;
 import net.jetblack.feedbus.messages.ForwardedSubscriptionRequest;
 import net.jetblack.feedbus.messages.MonitorRequest;
@@ -36,8 +35,6 @@ import net.jetblack.feedbus.util.invokable.UnaryFunction;
 public class SubscriptionManager {
 
 	private static final Logger logger = Logger.getLogger(SubscriptionManager.class.getName());
-
-	private final SubscriptionMonitor _subscriptionMonitor = new SubscriptionMonitor();
 
 	private final SubscriptionRepository _repository;
 	private final NotificationManager _notificationManager;
@@ -60,8 +57,6 @@ public class SubscriptionManager {
 
 		_repository = new SubscriptionRepository();
 		_publisherManager = new PublisherManager(interactorManager);
-
-		_subscriptionMonitor.register();
 
 		interactorManager.InteractorClosed.add(new EventListener<InteractorClosedEventArgs>() {
 			@Override
@@ -136,14 +131,12 @@ public class SubscriptionManager {
 					subscriber, 
 					subscriptionRequest.getFeed(), 
 					subscriptionRequest.getTopic());
-			_subscriptionMonitor.incrSubscriptionCount();
 		} else {
 			_repository.removeSubscription(
 					subscriber, 
 					subscriptionRequest.getFeed(), 
 					subscriptionRequest.getTopic(),
 					false);
-			_subscriptionMonitor.decrSubscriptionCount();
 		}
 
 		_notificationManager.forwardSubscription(new ForwardedSubscriptionRequest(subscriber.getId(),
@@ -161,10 +154,8 @@ public class SubscriptionManager {
 
 		if (monitorRequest.isAdd()) {
 			_repository.addMonitor(monitor, monitorRequest.getFeed());
-			_subscriptionMonitor.incrMonitorCount();
 		} else {
 			_repository.removeMonitor(monitor, monitorRequest.getFeed(), false);
-			_subscriptionMonitor.decrMonitorCount();
 		}
 	}
 
